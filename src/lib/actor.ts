@@ -24,10 +24,29 @@ export const currentActor = cache(async function currentActor(requestHeaders?: H
     );
     if (!approved.rowCount) return null;
   }
+  let plan: string | undefined;
+  try {
+    const memRes = await getDatabase().query<{ type: string }>(
+      "SELECT m.type FROM tpa.memberships m JOIN tpa.people p ON p.id=m.person_id WHERE p.user_id=$1 LIMIT 1",
+      [session.user.id],
+    );
+    if (memRes.rows[0]?.type) {
+      plan = memRes.rows[0].type;
+    } else {
+      const draftRes = await getDatabase().query<{ plan: string }>(
+        "SELECT plan FROM tpa.application_drafts WHERE user_id=$1 LIMIT 1",
+        [session.user.id],
+      );
+      if (draftRes.rows[0]?.plan) plan = draftRes.rows[0].plan;
+    }
+  } catch {
+    // Tolerant if table not accessible
+  }
   return {
     id: session.user.id,
     name: session.user.name,
     email: session.user.email,
     roles: rows.map((row) => row.role),
+    plan,
   };
 });

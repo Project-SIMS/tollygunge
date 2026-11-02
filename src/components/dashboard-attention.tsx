@@ -19,15 +19,27 @@ export function DashboardAttention({ initialItems, workspaceCount }: { initialIt
         if (!response.ok) throw new Error("Unable to refresh");
         const data = await response.json() as { items: Item[] };
         if (!controller.signal.aborted) { setItems(data.items); setError(false); }
-      } catch {
-        if (!controller.signal.aborted) setError(true);
+      } catch (err: unknown) {
+        if (controller.signal.aborted || (err as Error)?.name === "AbortError") return;
+        setError(true);
       } finally { loading = false; }
     };
     void refresh();
     const timer = setInterval(() => void refresh(), 30_000);
     window.addEventListener("focus", refresh);
     document.addEventListener("visibilitychange", refresh);
-    return () => { controller.abort(); clearInterval(timer); window.removeEventListener("focus", refresh); document.removeEventListener("visibilitychange", refresh); };
+    return () => {
+      try {
+        if (!controller.signal.aborted) {
+          controller.abort("cleanup");
+        }
+      } catch {
+        // Ignore abort during unmount
+      }
+      clearInterval(timer);
+      window.removeEventListener("focus", refresh);
+      document.removeEventListener("visibilitychange", refresh);
+    };
   }, []);
   return <div className="dashboard-bento">
     <section className="bento-card bento-primary" aria-labelledby="dashboard-attention-title">

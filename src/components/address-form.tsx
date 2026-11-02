@@ -142,8 +142,9 @@ export function AddressForm({
         postalLocality: r.locality,
         postalCode: r.pin,
       }));
+      const city = result.cities?.length === 1 ? result.cities[0] : "";
       if (candidates.length === 1) {
-        onChange({ ...latestAddress.current, city: "", ...candidates[0] });
+        onChange({ ...latestAddress.current, city, ...candidates[0] });
         setPinState({
           message:
             "State, District and postal locality filled from PIN. Review these details.",
@@ -156,7 +157,7 @@ export function AddressForm({
             ...latestAddress.current,
             state: states[0],
             district: districts[0],
-            city: "",
+            city,
             postalLocality: "",
           });
         setPinState({
@@ -320,8 +321,13 @@ export function AddressForm({
               have been guessed.
             </p>
           )}
+          <h4>Address</h4>
+          <div className="form-grid">
+            {input("line1", "Address Line 1")}
+            {input("line2", "Address Line 2 (optional)")}
+          </div>
           <h4>
-            {address.country === "IN" ? "Start with your PIN" : "Location"}
+            {address.country === "IN" ? "PIN code & Location" : "Location"}
           </h4>
           <div className="form-grid address-location-grid">
             <label htmlFor={`${id}-country`}>
@@ -358,7 +364,7 @@ export function AddressForm({
                 <small>
                   Enter your six-digit PIN to fill State and District
                   automatically. Choose a postal locality if prompted, then
-                  enter your house, building or colony below.
+                  review city and state.
                 </small>
               </div>
             )}
@@ -378,7 +384,7 @@ export function AddressForm({
                 )}
                 {select(
                   "city",
-                  "City (optional)",
+                  "City",
                   data?.cities || [],
                   !!address.district,
                 )}
@@ -430,7 +436,7 @@ export function AddressForm({
                     {[
                       ...new Set(
                         data.localities
-                          .filter((r) => r.locality === address.postalLocality)
+                           .filter((r) => r.locality === address.postalLocality)
                           .map((r) => r.pin),
                       ),
                     ].join(", ")}
@@ -482,11 +488,6 @@ export function AddressForm({
               )}
             </>
           )}
-          <h4>Address</h4>
-          <div className="form-grid">
-            {input("line1", "Address Line 1")}
-            {input("line2", "Address Line 2 / locality (optional)")}
-          </div>
         </>
       )}
     </section>

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { eventReturnPath } from "@/domain/event-flow";
 import { NewPasswordField } from "./new-password-field";
+import { PortalIcon } from "./portal-icon";
 const client = createAuthClient();
 export function Signup({ returnTo }: { returnTo?: string }) {
   const destination = eventReturnPath(returnTo) ?? "/member";
@@ -114,7 +115,8 @@ export function OnboardingSignIn({
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false),
-    [message, setMessage] = useState("");
+    [message, setMessage] = useState(""),
+    [showPassword, setShowPassword] = useState(false);
   return (
     <form
       className="member-settings"
@@ -157,12 +159,22 @@ export function OnboardingSignIn({
       </label>
       <label>
         Password
-        <input
-          name="password"
-          type="password"
-          autoComplete="current-password"
-          required
-        />
+        <div className="auth-password-wrapper">
+          <input
+            name="password"
+            type={showPassword ? "text" : "password"}
+            autoComplete="current-password"
+            required
+          />
+          <button
+            type="button"
+            className="auth-password-toggle"
+            aria-label={showPassword ? "Hide password" : "Show password"}
+            onClick={() => setShowPassword((prev) => !prev)}
+          >
+            <PortalIcon name={showPassword ? "eyeOff" : "eye"} />
+          </button>
+        </div>
       </label>
       <Link className="auth-recovery" href="/forgot-password">Forgot password?</Link>
       <label className="consent">

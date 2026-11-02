@@ -89,31 +89,25 @@ export function AccountControls({
   actor,
   portal = false,
 }: {
-  actor?: { name: string; email: string; roles: string[] } | null;
+  actor?: { id?: string; name: string; email: string; roles: string[]; plan?: string } | null;
   portal?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const root = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
   const pinned = useRef(false);
-  const {refs: {setReference, setFloating}, floatingStyles, context} = useFloating({ open, onOpenChange: (value, _event, reason) => {
-    if (!value && (reason === "escape-key" || reason === "outside-press")) {
-      pinned.current = false;
-      setOpen(false);
-      if (reason === "escape-key") trigger.current?.focus();
-    } else if (!pinned.current) setOpen(value);
-  }, placement: "bottom-end", strategy: "fixed", middleware: [offset(10), flip(), shift({padding:12})], whileElementsMounted: autoUpdate });
-  const hover = useHover(context, { enabled: portal, delay: {open:180,close:100}, handleClose: safePolygon({buffer:6}), mouseOnly:true });
-  const focus = useFocus(context, {enabled:portal});
-  const floatingDismiss = useDismiss(context, {enabled:portal});
-  const {getReferenceProps,getFloatingProps} = useInteractions([hover,focus,floatingDismiss]);
+  const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   useEffect(() => {
     if (!open) return;
     const dismiss = (e: PointerEvent) => {
-      if (!root.current?.contains(e.target as Node)) { pinned.current = false; setOpen(false); }
+      if (!root.current?.contains(e.target as Node)) {
+        pinned.current = false;
+        setOpen(false);
+      }
     };
     const key = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && !portal) {
+      if (e.key === "Escape") {
         pinned.current = false;
         setOpen(false);
         trigger.current?.focus();
@@ -124,19 +118,37 @@ export function AccountControls({
     return () => {
       document.removeEventListener("pointerdown", dismiss);
       document.removeEventListener("keydown", key);
+      if (hoverTimer.current) clearTimeout(hoverTimer.current);
     };
-  }, [open, portal]);
+  }, [open]);
+
   return (
     <div className="account-controls">
-      {actor && <AttentionBell />}
-      <div className="account-popover" ref={root}>
+      {actor && !actor.id?.startsWith("preview") && <AttentionBell />}
+      <div
+        className="account-popover"
+        ref={root}
+        onPointerEnter={(e) => {
+          if (!portal || e.pointerType !== "mouse") return;
+          if (hoverTimer.current) clearTimeout(hoverTimer.current);
+          setOpen(true);
+        }}
+        onPointerLeave={() => {
+          if (!portal) return;
+          if (!pinned.current) {
+            hoverTimer.current = setTimeout(() => setOpen(false), 200);
+          }
+        }}
+      >
         <button
-          ref={node => { trigger.current = node; setReference(node); }}
-          {...getReferenceProps()}
+          ref={trigger}
           className="avatar-trigger"
           aria-label={actor ? "Account menu" : "Appearance settings"}
           aria-expanded={open}
-          onClick={() => { const next = !pinned.current; pinned.current = next; setOpen(next); }}
+          onClick={() => {
+            pinned.current = !pinned.current;
+            setOpen(pinned.current);
+          }}
         >
           <span aria-hidden="true">
             {actor ? actor.name.slice(0, 1).toUpperCase() : "◐"}
@@ -145,18 +157,72 @@ export function AccountControls({
         {open && (
           <div
             className="account-menu"
-            ref={setFloating}
-            style={portal ? {...floatingStyles, right:"auto", maxHeight:"calc(100dvh - 24px)", overflowY:"auto"} : undefined}
-            {...getFloatingProps()}
             role="dialog"
             aria-label="Account settings"
             onClick={(e) => {
-              if ((e.target as HTMLElement).closest("a")) { pinned.current = false; setOpen(false); }
+              if ((e.target as HTMLElement).closest("a")) {
+                pinned.current = false;
+                setOpen(false);
+              }
             }}
           >
             {actor && (
               <>
-                <strong>{actor.name}</strong>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginBottom: 4 }}>
+                  <strong style={{ margin: 0 }}>{actor.name}</strong>
+                  {actor.roles?.includes("administrator") ? (
+                    <span
+                      style={{
+                        fontSize: 10,
+                        fontWeight: 700,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.06em",
+                        padding: "2px 8px",
+                        borderRadius: 9999,
+                        background: "rgba(250, 204, 21, 0.15)",
+                        color: "#facc15",
+                        border: "1px solid rgba(250, 204, 21, 0.35)",
+                        flexShrink: 0,
+                      }}
+                    >
+                      Admin
+                    </span>
+                  ) : actor.plan ? (
+                    <span
+                      style={{
+                        fontSize: 10,
+                        fontWeight: 700,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.06em",
+                        padding: "2px 8px",
+                        borderRadius: 9999,
+                        background: "rgba(56, 189, 248, 0.15)",
+                        color: "#38bdf8",
+                        border: "1px solid rgba(56, 189, 248, 0.35)",
+                        flexShrink: 0,
+                      }}
+                    >
+                      {actor.plan} Member
+                    </span>
+                  ) : (
+                    <span
+                      style={{
+                        fontSize: 10,
+                        fontWeight: 700,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.06em",
+                        padding: "2px 8px",
+                        borderRadius: 9999,
+                        background: "rgba(148, 163, 184, 0.15)",
+                        color: "#94a3b8",
+                        border: "1px solid rgba(148, 163, 184, 0.35)",
+                        flexShrink: 0,
+                      }}
+                    >
+                      Member
+                    </span>
+                  )}
+                </div>
                 <small>{portal ? <CopyValue value={actor.email} /> : actor.email}</small>
                 <Link href="/account/profile">Your profile</Link>
                 <Link href="/member/security">Account security</Link>
@@ -210,11 +276,11 @@ function AttentionBell() {
         if (!response.ok) throw Error();
         setItems((await response.json()).items);
         setError("");
-      } catch {
-        if (!controller.signal.aborted)
-          setError(
-            "Unable to load attention items. Try opening this panel again.",
-          );
+      } catch (err: unknown) {
+        if (controller.signal.aborted || (err as Error)?.name === "AbortError") return;
+        setError(
+          "Unable to load attention items. Try opening this panel again.",
+        );
       } finally {
         if (!controller.signal.aborted) setLoading(false);
       }
@@ -238,7 +304,13 @@ function AttentionBell() {
     document.addEventListener("pointerdown", dismiss);
     document.addEventListener("keydown", key);
     return () => {
-      controller.abort();
+      try {
+        if (!controller.signal.aborted) {
+          controller.abort("cleanup");
+        }
+      } catch {
+        // Ignore abort during unmount
+      }
       clearInterval(timer);
       document.removeEventListener("visibilitychange", load);
       if (hoverTimer.current) clearTimeout(hoverTimer.current);

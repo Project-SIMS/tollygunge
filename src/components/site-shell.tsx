@@ -8,10 +8,8 @@ import { TpaLogo } from "./tpa-logo";
 import { PublicFooter } from "./public-footer";
 import {
   portalNavigation,
-  deploymentEnvironment,
 } from "@/domain/portal-navigation";
 import { PortalNavigation } from "./portal-navigation";
-import { StatusBadge } from "./portal-values";
 import { WorkspaceSearch } from "./workspace-search";
 import { PortalIcon } from "./portal-icon";
 import { PortalFrame } from "./portal-frame";
@@ -207,29 +205,16 @@ export function PortalShell({
         <header className="workspace-topbar portal-topbar">
           <div className="portal-brand-row">
             <Brand compact />
-            {deploymentEnvironment(process.env.TPA_DEPLOYMENT_ENV) && (
-              <StatusBadge
-                tone={
-                  process.env.TPA_DEPLOYMENT_ENV === "testing"
-                    ? "testing"
-                    : process.env.TPA_DEPLOYMENT_ENV === "production"
-                      ? "active"
-                      : "neutral"
-                }
-              >
-                {process.env.TPA_DEPLOYMENT_ENV}
-              </StatusBadge>
-            )}
           </div>
+          <PortalNavigation
+            groups={portalNavigation(actor?.roles ?? [])}
+            staff={staff}
+          />
           <div className="portal-utilities">
             {staff && <WorkspaceSearch />}
             <AccountControls actor={actor} portal />
           </div>
         </header>
-        <PortalNavigation
-          groups={portalNavigation(actor?.roles ?? [])}
-          staff={staff}
-        />
         {children}
       </div>
     </PortalFrame>

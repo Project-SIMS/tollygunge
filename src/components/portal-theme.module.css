@@ -794,3 +794,497 @@
   .portal :global(.attention-close) { width: 44px; height: 44px; flex-basis: 44px; }
   .portal :global(.attention-category select), .portal :global(.member-events-intro select) { font-size: 16px; }
 }
+
+/* ==============================================================================
+   STARRY NIGHT THEME — ALL ADMIN & STAFF WORKSPACES
+   Inspired by deep cosmic midnight, twilight blue-slate cards, electric blue sparklines,
+   and starlight radiant yellow accents.
+   ============================================================================== */
+.portal:global(.staff-shell),
+:global(.staff-shell),
+:global([data-theme="starry-night"]),
+.portal:global(.starry-night) {
+  --navy: #f8fafc;
+  --gold: #facc15;
+  --paper: #0b0f19;
+  --ink: #f8fafc;
+  --muted: #8a9bb2;
+  --line: #1f2d4a;
+  --surface: #131b2e;
+  --surface-muted: #101726;
+  --control: #172138;
+  --link: #60a5fa;
+  --accent-text: #facc15;
+  --action-bg: #facc15;
+  --action-hover: #fde047;
+  --action-text: #0b0f19;
+  --portal-active: #facc15;
+  --portal-focus: #3b82f6;
+  --portal-sidebar: #0d1322;
+  --portal-hover: #1b2640;
+  --radius-control: 8px;
+  --radius-panel: 14px;
+  --shadow-popover: 0 16px 36px rgba(0, 0, 0, 0.6), 0 0 1px rgba(250, 204, 21, 0.2);
+  --status-success: #34d399;
+  --status-success-bg: #064e3b;
+  --status-warning: #fbbf24;
+  --status-warning-bg: #451a03;
+  --status-danger: #f87171;
+  --status-danger-bg: #450a0a;
+  --status-info: #60a5fa;
+  --status-info-bg: #1e3a5f;
+  background-color: #0b0f19 !important;
+  color: #f8fafc !important;
+}
+
+/* Canvas & Ambient Starry Glow */
+:global(.staff-shell),
+:global(.staff-shell .staff-content),
+:global(.staff-shell .workspace-main),
+:global([data-theme="starry-night"] .workspace-main) {
+  background-color: #0b0f19 !important;
+  background-image: 
+    radial-gradient(circle at 85% 15%, rgba(59, 130, 246, 0.07) 0%, transparent 45%),
+    radial-gradient(circle at 15% 85%, rgba(250, 204, 21, 0.04) 0%, transparent 40%) !important;
+  color: #f8fafc !important;
+}
+
+/* Topbar & Header */
+:global(.staff-shell .portal-topbar),
+:global(.staff-shell .workspace-topbar),
+:global([data-theme="starry-night"] .workspace-top) {
+  background: #0d1322 !important;
+  border-bottom: 1px solid #1f2d4a !important;
+  color: #f8fafc !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 20px !important;
+}
+:global(.staff-shell .portal-brand-row .brand-name),
+:global([data-theme="starry-night"] .brand-name) {
+  color: #f8fafc !important;
+}
+:global(.staff-shell .search-entry),
+:global(.staff-shell input[type="search"]),
+:global(.staff-shell .portal-utilities input) {
+  background: #172138 !important;
+  border: 1px solid #243556 !important;
+  color: #f8fafc !important;
+  border-radius: 50% !important;
+}
+:global(.staff-shell .search-entry) {
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  min-height: 38px !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+}
+:global(.staff-shell .search-entry :is(span, kbd)) {
+  display: none !important;
+}
+:global(.staff-shell .search-entry .portal-icon) {
+  margin: 0 !important;
+  color: #8a9bb2 !important;
+  width: 18px !important;
+  height: 18px !important;
+}
+:global(.staff-shell .search-entry:hover) {
+  background: #202e4d !important;
+  border-color: #3b527d !important;
+}
+:global(.staff-shell .search-entry:hover .portal-icon) {
+  color: #f8fafc !important;
+}
+
+/* Account dropdown popover & transitions */
+:global(.portal .account-menu) {
+  animation: none !important;
+  opacity: 1 !important;
+}
+:global(.staff-shell .account-menu) {
+  background: #111a2e !important;
+  border: 1px solid #243556 !important;
+  box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.6) !important;
+}
+:global(.staff-shell .account-menu a) {
+  color: #cbd5e1 !important;
+}
+:global(.staff-shell .account-menu a:hover) {
+  background: #192744 !important;
+  color: #f8fafc !important;
+}
+
+/* Horizontal Navigation inside Topbar (Starry Pill Style parallel to TPA logo) */
+:global(.staff-shell .portal-topbar .portal-navigation) {
+  background: transparent !important;
+  border-bottom: none !important;
+  position: static !important;
+  height: auto !important;
+  padding: 0 !important;
+  margin: 0 auto 0 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  overflow-x: auto !important;
+  white-space: nowrap !important;
+  scrollbar-width: none !important;
+}
+:global(.staff-shell .portal-topbar .portal-navigation::-webkit-scrollbar) {
+  display: none !important;
+}
+:global(.staff-shell .portal-navigation) {
+  background: #0d1322 !important;
+  border-bottom: 1px solid #1f2d4a !important;
+}
+:global(.staff-shell .portal-navigation a) {
+  color: #8a9bb2 !important;
+  border-radius: 9999px !important;
+  font-weight: 550 !important;
+  padding: 6px 16px !important;
+  text-decoration: none !important;
+  transition: all 140ms ease !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1.4 !important;
+}
+:global(.staff-shell .portal-navigation a:hover) {
+  background: #16223a !important;
+  color: #f8fafc !important;
+}
+:global(.staff-shell .portal-navigation a:is([aria-current="page"], .current)) {
+  background: #facc15 !important;
+  color: #0b0f19 !important;
+  font-weight: 700 !important;
+  border-radius: 9999px !important;
+  box-shadow: 0 0 16px rgba(250, 204, 21, 0.3) !important;
+}
+
+:global(.staff-shell .portal-subsections) {
+  background: #101726 !important;
+  border: 1px solid #1f2d4a !important;
+  border-radius: 9999px !important;
+  padding: 4px !important;
+}
+:global(.staff-shell .portal-subsections a) {
+  color: #8a9bb2 !important;
+  border-radius: 9999px !important;
+  font-weight: 550 !important;
+}
+:global(.staff-shell .portal-subsections a:hover) {
+  background: #16223a !important;
+  color: #f8fafc !important;
+}
+:global(.staff-shell .portal-subsections a:is([aria-current="page"], .current)) {
+  background: #facc15 !important;
+  color: #0b0f19 !important;
+  font-weight: 700 !important;
+  border-radius: 9999px !important;
+  box-shadow: 0 0 12px rgba(250, 204, 21, 0.25) !important;
+}
+
+/* Bento Cards, Workspace Panels & Sections */
+:global(.staff-shell .bento-card),
+:global(.staff-shell .workspace-panel),
+:global(.staff-shell .panel),
+:global(.staff-shell .crm-detail),
+:global(.staff-shell .directory-preview),
+:global(.staff-shell .member-register-workspace),
+:global([data-theme="starry-night"] .bento-card),
+:global([data-theme="starry-night"] .content-page),
+:global([data-theme="starry-night"] .page-heading) {
+  background: #131b2e !important;
+  border: 1px solid #1f2d4a !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.45) !important;
+  color: #e2e8f0 !important;
+}
+:global(.staff-shell h1),
+:global(.staff-shell h2),
+:global(.staff-shell h3),
+:global(.staff-shell h4),
+:global([data-theme="starry-night"] h1),
+:global([data-theme="starry-night"] h2),
+:global([data-theme="starry-night"] h3) {
+  color: #ffffff !important;
+}
+:global(.staff-shell p),
+:global(.staff-shell .portal-page-intro p),
+:global(.staff-shell .metric-label),
+:global([data-theme="starry-night"] p) {
+  color: #8a9bb2 !important;
+}
+
+/* Service Metrics & Shortcuts (Dashboard KPI Cards) */
+:global(.staff-shell .service-shortcuts a) {
+  background: #131b2e !important;
+  border: 1px solid #1f2d4a !important;
+  border-radius: 14px !important;
+  padding: 18px 20px !important;
+  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.4) !important;
+  transition: all 160ms cubic-bezier(.23, 1, .32, 1) !important;
+}
+:global(.staff-shell .service-shortcuts a:hover) {
+  background: #17223b !important;
+  border-color: #3b82f6 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5), 0 0 14px rgba(59, 130, 246, 0.2) !important;
+}
+:global(.staff-shell .service-shortcuts strong) {
+  font-size: 28px !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  letter-spacing: -0.02em !important;
+}
+:global(.staff-shell .service-shortcuts .metric-label) {
+  color: #8a9bb2 !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+}
+:global(.staff-shell .service-shortcuts .metric-icon) {
+  color: #60a5fa !important;
+  width: 22px !important;
+  height: 22px !important;
+}
+
+/* Starry Night Buttons */
+:global(.staff-shell .button),
+:global(.staff-shell .button.gold),
+:global(.staff-shell button[type="submit"]),
+:global(.staff-shell .form-actions .button:not(.secondary)),
+:global([data-theme="starry-night"] .button) {
+  background: #facc15 !important;
+  color: #0b0f19 !important;
+  font-weight: 700 !important;
+  border: 1px solid #facc15 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 0 14px rgba(250, 204, 21, 0.25) !important;
+  transition: all 140ms ease !important;
+}
+:global(.staff-shell .button:hover),
+:global(.staff-shell .button.gold:hover),
+:global(.staff-shell button[type="submit"]:hover),
+:global(.staff-shell .form-actions .button:not(.secondary):hover),
+:global([data-theme="starry-night"] .button:hover) {
+  background: #fde047 !important;
+  border-color: #fde047 !important;
+  box-shadow: 0 0 20px rgba(250, 204, 21, 0.4) !important;
+  transform: translateY(-1px) !important;
+}
+
+:global(.staff-shell .button.secondary),
+:global(.staff-shell a.button.secondary) {
+  background: linear-gradient(180deg, #2563eb, #1d4ed8) !important;
+  color: #ffffff !important;
+  border: 1px solid #3b82f6 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 10px rgba(37, 99, 235, 0.3) !important;
+}
+:global(.staff-shell .button.secondary:hover),
+:global(.staff-shell a.button.secondary:hover) {
+  background: linear-gradient(180deg, #3b82f6, #2563eb) !important;
+  border-color: #60a5fa !important;
+}
+
+:global(.staff-shell button:not(.button):not([class*="link"]):not(.segmented button)),
+:global(.staff-shell .workspace-tabs button),
+:global([data-theme="starry-night"] .sidebar nav a) {
+  background: #172138 !important;
+  border: 1px solid #243556 !important;
+  color: #cbd5e1 !important;
+  border-radius: 8px !important;
+  transition: all 140ms ease !important;
+}
+:global(.staff-shell button:not(.button):not([class*="link"]):not(.segmented button):hover),
+:global(.staff-shell .workspace-tabs button:hover),
+:global([data-theme="starry-night"] .sidebar nav a:hover) {
+  background: #1e2b47 !important;
+  border-color: #3b82f6 !important;
+  color: #ffffff !important;
+}
+:global(.staff-shell .workspace-tabs button:is([aria-selected="true"], .active)),
+:global(.staff-shell .segmented button[aria-pressed="true"]),
+:global([data-theme="starry-night"] .sidebar nav a.current) {
+  background: #facc15 !important;
+  color: #0b0f19 !important;
+  border-color: #facc15 !important;
+  font-weight: 700 !important;
+  border-radius: 9999px !important;
+  box-shadow: 0 0 12px rgba(250, 204, 21, 0.25) !important;
+}
+
+/* Form Controls (Inputs, Selects, Textareas) */
+:global(.staff-shell input:not([type="checkbox"]):not([type="radio"])),
+:global(.staff-shell select),
+:global(.staff-shell textarea),
+:global([data-theme="starry-night"] input),
+:global([data-theme="starry-night"] select),
+:global([data-theme="starry-night"] textarea) {
+  background: #172138 !important;
+  border: 1px solid #243556 !important;
+  color: #f8fafc !important;
+  border-radius: 8px !important;
+  padding: 10px 14px !important;
+  font-size: 14px !important;
+  transition: all 140ms ease !important;
+}
+:global(.staff-shell input::placeholder),
+:global(.staff-shell textarea::placeholder) {
+  color: #64748b !important;
+}
+:global(.staff-shell input:focus),
+:global(.staff-shell select:focus),
+:global(.staff-shell textarea:focus),
+:global([data-theme="starry-night"] input:focus),
+:global([data-theme="starry-night"] select:focus) {
+  border-color: #3b82f6 !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.35) !important;
+  background: #19243d !important;
+}
+:global(.staff-shell label),
+:global([data-theme="starry-night"] label) {
+  color: #8a9bb2 !important;
+  font-weight: 500 !important;
+  font-size: 13px !important;
+}
+
+/* Tables & Registers */
+:global(.staff-shell table),
+:global(.staff-shell .operations-table),
+:global(.staff-shell .member-register-table),
+:global([data-theme="starry-night"] table) {
+  background: #131b2e !important;
+  border: 1px solid #1f2d4a !important;
+  border-radius: 12px !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  overflow: hidden !important;
+  width: 100% !important;
+}
+:global(.staff-shell th),
+:global([data-theme="starry-night"] th) {
+  background: #101726 !important;
+  color: #8a9bb2 !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  padding: 12px 16px !important;
+  border-bottom: 1px solid #1f2d4a !important;
+}
+:global(.staff-shell td),
+:global([data-theme="starry-night"] td) {
+  border-bottom: 1px solid #172138 !important;
+  color: #e2e8f0 !important;
+  padding: 12px 16px !important;
+  font-size: 13px !important;
+}
+:global(.staff-shell tbody tr:hover td),
+:global([data-theme="starry-night"] tbody tr:hover td) {
+  background: #17223b !important;
+}
+
+/* Record Lists & Selection Items */
+:global(.staff-shell .record-list),
+:global(.staff-shell .review-list),
+:global([data-theme="starry-night"] .review-list) {
+  background: #101726 !important;
+  border: 1px solid #1f2d4a !important;
+  border-radius: 12px !important;
+  padding: 8px !important;
+}
+:global(.staff-shell .record-list button),
+:global(.staff-shell .review-list button),
+:global([data-theme="starry-night"] .review-list button) {
+  background: #131b2e !important;
+  border: 1px solid #1f2d4a !important;
+  border-radius: 10px !important;
+  color: #cbd5e1 !important;
+  margin-bottom: 6px !important;
+  transition: all 140ms ease !important;
+}
+:global(.staff-shell .record-list button:hover),
+:global(.staff-shell .review-list button:hover),
+:global([data-theme="starry-night"] .review-list button:hover) {
+  background: #17223b !important;
+  border-color: #2b3d63 !important;
+  color: #ffffff !important;
+}
+:global(.staff-shell .record-list button:is(.selected, [aria-pressed="true"], [aria-selected="true"])),
+:global(.staff-shell .review-list button:is(.selected, [aria-pressed="true"], [aria-selected="true"])),
+:global([data-theme="starry-night"] .review-list button.selected) {
+  background: #182847 !important;
+  border-color: #3b82f6 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 14px rgba(59, 130, 246, 0.25) !important;
+}
+
+/* Status Badges */
+:global(.staff-shell .status-new),
+:global([data-theme="starry-night"] .status-new) {
+  background: #172554 !important;
+  color: #93c5fd !important;
+  border: 1px solid #1e40af !important;
+  border-radius: 9999px !important;
+  padding: 3px 10px !important;
+}
+:global(.staff-shell .status-contacted),
+:global([data-theme="starry-night"] .status-contacted) {
+  background: #422006 !important;
+  color: #fde047 !important;
+  border: 1px solid #713f12 !important;
+  border-radius: 9999px !important;
+  padding: 3px 10px !important;
+}
+:global(.staff-shell .status-closed),
+:global([data-theme="starry-night"] .status-closed) {
+  background: #022c22 !important;
+  color: #6ee7b7 !important;
+  border: 1px solid #065f46 !important;
+  border-radius: 9999px !important;
+  padding: 3px 10px !important;
+}
+:global(.staff-shell .status-badge) {
+  border-radius: 9999px !important;
+  font-weight: 600 !important;
+}
+
+/* Activity List */
+:global(.staff-shell .portal-activity-list li) {
+  border-bottom: 1px solid #1a243b !important;
+  color: #cbd5e1 !important;
+  padding: 12px 0 !important;
+}
+:global(.staff-shell .portal-activity-list strong) {
+  color: #ffffff !important;
+}
+:global(.staff-shell .portal-activity-list time) {
+  color: #64748b !important;
+}
+
+/* Notice & Alerts */
+:global(.staff-shell .notice),
+:global(.staff-shell .empty-state),
+:global(.staff-shell .review-empty),
+:global([data-theme="starry-night"] .notice) {
+  background: #131b2e !important;
+  border: 1px solid #22375d !important;
+  color: #94a3b8 !important;
+  border-radius: 12px !important;
+}
+
+/* Preview Admin Sidebar */
+:global([data-theme="starry-night"] .sidebar),
+:global(.staff-shell .staff-sidebar) {
+  background: #0d1322 !important;
+  border-right: 1px solid #1f2d4a !important;
+}
+:global([data-theme="starry-night"] .sidebar .eyebrow) {
+  color: #facc15 !important;
+}
+

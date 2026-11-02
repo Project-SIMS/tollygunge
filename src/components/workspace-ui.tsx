@@ -101,7 +101,6 @@ export function WorkspacePageHeading({
       </span>
       <div>
         <h1>{title}</h1>
-        <p>{description ?? presentation?.description}</p>
       </div>
     </header>
   );

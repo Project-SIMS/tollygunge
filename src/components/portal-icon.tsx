@@ -18,6 +18,8 @@ const paths: Record<string, string> = {
   menu: "M4 6h16M4 12h16M4 18h16",
   panel: "M3 3h18v18H3ZM9 3v18M15 9l-3 3 3 3",
   close: "m6 6 12 12M6 18 18 6",
+  eye: "M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Zm10 3a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z",
+  eyeOff: "M9.88 9.88a3 3 0 1 0 4.24 4.24m-4.24-4.24L3 3m7.24 7.24 5.76 5.76M21 21l-3.24-3.24M2 12s3-7 10-7c2.32 0 4.4 1 6.09 2.57M14.12 14.12A7.03 7.03 0 0 1 12 15c-3.87 0-7-3-7-3a13.3 13.3 0 0 1 2.37-2.73",
 };
 
 /** One stroke, grid and size for navigation and portal utility icons. */

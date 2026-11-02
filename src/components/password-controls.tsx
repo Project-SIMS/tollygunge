@@ -8,6 +8,7 @@ import { eventReturnPath } from "@/domain/event-flow";
 import { passwordPolicy, passwordError, existingPasswordMaximum } from "@/domain/password-policy";
 import { FallbackPanel } from "./fallback-screen";
 import { LoadingScreen } from "./loading-screen";
+import { PortalIcon } from "./portal-icon";
 const client = createAuthClient();
 
 export function PasswordResetLanding() {
@@ -32,7 +33,8 @@ export function PasswordResetLanding() {
 export function PasswordSignIn({ enabled, returnTo }: { enabled: boolean; returnTo?: string }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false),
-    [message, setMessage] = useState("");
+    [message, setMessage] = useState(""),
+    [showPassword, setShowPassword] = useState(false);
   return (
     <form
       className="member-settings"
@@ -69,13 +71,23 @@ export function PasswordSignIn({ enabled, returnTo }: { enabled: boolean; return
       </label>
       <label>
         Password
-        <input
-          name="password"
-          type="password"
-          autoComplete="current-password"
-          maxLength={existingPasswordMaximum}
-          required
-        />
+        <div className="auth-password-wrapper">
+          <input
+            name="password"
+            type={showPassword ? "text" : "password"}
+            autoComplete="current-password"
+            maxLength={existingPasswordMaximum}
+            required
+          />
+          <button
+            type="button"
+            className="auth-password-toggle"
+            aria-label={showPassword ? "Hide password" : "Show password"}
+            onClick={() => setShowPassword((prev) => !prev)}
+          >
+            <PortalIcon name={showPassword ? "eyeOff" : "eye"} />
+          </button>
+        </div>
       </label>
       <Link href="/forgot-password" className="auth-recovery">
         Forgot password?

@@ -35,6 +35,11 @@
 .layout :global(.auth-provider .button) { background: var(--surface); color: var(--ink); border: 1px solid var(--auth-input-border); gap: 12px; }
 .layout :global(.auth-provider svg) { flex-shrink: 0; }
 .layout :global(.auth-message) { font-size: .8125rem; line-height: 1.6; color: var(--status-danger); margin: 0; }
+.layout :global(.auth-password-wrapper) { position: relative; display: flex; align-items: center; width: 100%; }
+.layout .formPanel .formContent :global(.member-settings .auth-password-wrapper input:not([type="checkbox"])) { width: 100%; padding-right: 44px; }
+.layout :global(.auth-password-toggle) { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; padding: 0; background: transparent; border: 0; border-radius: 4px; color: var(--muted); cursor: pointer; }
+.layout :global(.auth-password-toggle:hover) { color: var(--ink); }
+.layout :global(.auth-password-toggle:focus-visible) { outline: 2px solid var(--auth-focus); outline-offset: 2px; }
 .layout :global(.auth-message:empty) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 .layout :global(.auth-membership-note) { margin-top: 20px; }
 .layout :global(.notice) { padding: 16px; margin: 0 0 24px; line-height: 1.65; }

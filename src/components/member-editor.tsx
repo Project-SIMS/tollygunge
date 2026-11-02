@@ -39,6 +39,7 @@ export function MemberEditor({
       designation: member.person.jobTitle || "",
       membershipNumber: member.membership_number,
       addresses: member.person.addresses || {},
+      type: member.type || "Annual",
     }),
     [message, setMessage] = useState(""),
     [busy, setBusy] = useState(false);
@@ -53,12 +54,14 @@ export function MemberEditor({
           e.preventDefault();
           setBusy(true);
           try {
+            const { type, ...memberData } = form;
             await api("/api/staff/members", {
               action: "update",
               personId: member.person_id,
               personVersion: member.person_version,
               membershipVersion: member.membership_version,
-              member: form,
+              member: memberData,
+              membership: { type },
             });
             setMessage("Member details saved.");
             onDirtyChange?.(false);
@@ -104,6 +107,17 @@ export function MemberEditor({
             />
           </label>
         ))}
+        <label>
+          Member type
+          <select
+            value={form.type}
+            onChange={(e) => setForm({ ...form, type: e.target.value })}
+          >
+            <option value="Annual">Annual</option>
+            <option value="Life">Life</option>
+            <option value="Patron">Patron</option>
+          </select>
+        </label>
         <button className="button" disabled={busy}>
           Save member details
         </button>

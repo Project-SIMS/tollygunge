@@ -36,7 +36,7 @@ app/
 
 Root files retain their supported locations: Dockerfile, `.dockerignore`,
 `.gitignore`, `.env.example`, package manifest/lockfile, Next/TypeScript/ESLint/
-Playwright configuration, README, AGENTS, CLAUDE and the existing release note.
+Playwright configuration, README, AGENTS, CLAUDE, `run.sh` and the existing release note.
 `next-env.d.ts` is already tracked: preserve its current treatment in this phase.
 `.next`, `node_modules`, `out` and TypeScript build information are generated,
 ignored outputs. Their presence does not authorize deletion or prove redundancy.

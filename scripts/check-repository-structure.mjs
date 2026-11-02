@@ -9,7 +9,7 @@ const rootFiles = new Set([
   ".dockerignore", ".env.example", ".gitignore", "AGENTS.md", "CLAUDE.md",
   "Dockerfile", "eslint.config.mjs", "next-env.d.ts", "next.config.mjs",
   "package-lock.json", "package.json", "playwright.config.ts", "README.md",
-  "tsconfig.json", "WORKSPACE_UX_RELEASE.md",
+  "run.sh", "tsconfig.json", "WORKSPACE_UX_RELEASE.md",
 ]);
 const generatedDirectories = new Set([
   "node_modules", ".next", "out", "playwright-report", "test-results",
