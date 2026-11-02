@@ -64,3 +64,27 @@ export async function validateAddresses(db: DB, input: Addresses, previous: Addr
   }
   return result;
 }
+
+/** Return reviewed city names only within the selected PIN / hierarchy. */
+export async function postalCities(
+  db: DB,
+  version: string,
+  { pin = "", state = "", district = "" }: { pin?: string; state?: string; district?: string },
+): Promise<string[]> {
+  if (!pin && !(state && district)) return [];
+  const result = await db.query(
+    `SELECT DISTINCT a.city FROM tpa.postal_city_aliases a
+     WHERE a.version_id=$1
+       AND ($2='' OR lower(a.state)=lower($2))
+       AND ($3='' OR lower(a.district)=lower($3))
+       AND EXISTS (
+         SELECT 1 FROM tpa.postal_locations l
+         WHERE l.version_id=a.version_id
+           AND lower(l.state)=lower(a.state)
+           AND lower(l.district)=lower(a.district)
+           AND ($4='' OR l.pin=$4)
+       ) ORDER BY a.city`,
+    [version, state, district, pin],
+  );
+  return result.rows.map((row) => row.city);
+}

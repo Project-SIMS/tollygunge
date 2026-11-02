@@ -7,3 +7,9 @@ Kolkata/Calcutta: the Kolkata Municipal Corporation describes the city renaming 
 Howrah/Haora: the district administration identifies the city in Howrah district, West Bengal: https://howrah.gov.in/map-of-district/ ; the government district survey records the alternate name: https://www.dmm.gov.in/pdfs/DSR/DSR_Howrah.pdf
 
 Reviewed on 2026-10-11. Adding cities requires a source documenting their state/district relationship, a reviewed alias CSV, and validation against the installed postal reference. City aliases do not change postal locality names.
+
+Delhi / East (reviewed 2026-11-02): the East Delhi district administration's
+school directory lists Mayur Vihar, Delhi 110091 within East district:
+https://dmeast.delhi.gov.in/education/ . This mapping uses the installed postal
+hierarchy's state `Delhi` and district `East`; it does not map other districts
+or infer cities from district names.
