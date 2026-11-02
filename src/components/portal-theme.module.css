@@ -1,28 +1,28 @@
-/* Portal reference lock: Crazy Hands horizontal navigation, grouped forms and
+/* Starry Night palette: tweakcn preset; existing horizontal navigation, grouped forms and
    compact working lists. Motion: feedback only, named properties, reduced motion.
    This local class is attached only to authenticated portal shells. */
 .portal {
-  --navy: #122b4a;
-  --gold: #2558c7;
-  --paper: #f6f8fb;
-  --ink: #182b45;
-  --muted: #5c6c80;
-  --line: #dce3ed;
-  --surface: #ffffff;
-  --surface-muted: #eef3f9;
-  --control: #ffffff;
-  --link: #2455b6;
-  --accent-text: #2455b6;
-  --action-bg: #2455b6;
-  --action-hover: #1c4494;
-  --action-text: #ffffff;
-  --portal-active: #e9effc;
-  --portal-focus: #3972df;
-  --portal-sidebar: #ffffff;
-  --portal-hover: #f1f5fb;
-  --radius-control: 7px;
-  --radius-panel: 10px;
-  --shadow-popover: 0 12px 32px #122b4a18, 0 2px 6px #122b4a08;
+  --navy: #1a2238;
+  --gold: #f7c873;
+  --paper: #f5f7fa;
+  --ink: #1a2238;
+  --muted: #465979;
+  --line: #b0b8c1;
+  --surface: #e3eaf2;
+  --surface-muted: #d8e2ef;
+  --control: #f5f7fa;
+  --link: #3a5ba0;
+  --accent-text: #3a5ba0;
+  --action-bg: #3a5ba0;
+  --action-hover: #304d8b;
+  --action-text: #fffbe6;
+  --portal-active: #d5e1ef;
+  --portal-focus: #3a5ba0;
+  --portal-sidebar: #e3eaf2;
+  --portal-hover: #d5e1ef;
+  --radius-control: 8px;
+  --radius-panel: 8px;
+  --shadow-popover: 0 16px 40px #1a22381c, 0 2px 8px #1a223810;
   --portal-ease: cubic-bezier(.23, 1, .32, 1);
   --motion-control: 140ms;
   --font-editorial: "TPA Jakarta", sans-serif;
@@ -37,32 +37,32 @@
 }
 
 :global(html[data-color-mode="dark"]) .portal {
-  --navy: #dce8fa;
-  --gold: #8aafff;
-  --paper: #0f1724;
-  --ink: #e6edf7;
-  --muted: #a4b3c8;
-  --line: #303e53;
-  --surface: #172234;
-  --surface-muted: #202e43;
-  --control: #142033;
-  --link: #9bbcff;
-  --accent-text: #9bbcff;
-  --action-bg: #9bbcff;
-  --action-hover: #bed3ff;
-  --action-text: #10203b;
-  --portal-active: #263b5e;
-  --portal-focus: #9bbcff;
-  --portal-sidebar: #131e2e;
-  --portal-hover: #22324a;
-  --status-success: #9de0b9;
-  --status-success-bg: #173d30;
-  --status-warning: #f2d18a;
-  --status-warning-bg: #42351e;
-  --status-danger: #ffb3bb;
-  --status-danger-bg: #47232f;
-  --status-info: #a8c9ff;
-  --status-info-bg: #233752;
+  --navy: #e6eaf3;
+  --gold: #ffe066;
+  --paper: #181a24;
+  --ink: #e6eaf3;
+  --muted: #a4adc2;
+  --line: #3f4359;
+  --surface: #23243a;
+  --surface-muted: #1d1e2f;
+  --control: #1d1e2f;
+  --link: #bccdf0;
+  --accent-text: #bccdf0;
+  --action-bg: #3a5ba0;
+  --action-hover: #4266b1;
+  --action-text: #ffe066;
+  --portal-active: #30334c;
+  --portal-focus: #ffe066;
+  --portal-sidebar: #23243a;
+  --portal-hover: #30334c;
+  --status-success: #9dd6bb;
+  --status-success-bg: #203d35;
+  --status-warning: #ffe066;
+  --status-warning-bg: #403721;
+  --status-danger: #f0b2ca;
+  --status-danger-bg: #432a3c;
+  --status-info: #bccdf0;
+  --status-info-bg: #283858;
 }
 
 .portal:global(.workspace) { display: grid; grid-template-columns: 232px minmax(0, 1fr); }
@@ -795,709 +795,117 @@
   .portal :global(.attention-category select), .portal :global(.member-events-intro select) { font-size: 16px; }
 }
 
-/* ==============================================================================
-   STAFF & ADMIN WORKSPACE THEME
-   Supports both clean, modern Light Mode and cosmic Starry Night Dark Mode.
-   ============================================================================== */
 
-/* Layout & Structure (Shared across light and dark modes) */
-:global(.staff-shell .portal-topbar),
-:global(.staff-shell .workspace-topbar) {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--line);
-  color: var(--ink);
+/* One component language for both member and staff portals. Palette roles are
+   shared; selected navigation uses secondary gold, primary actions stay cobalt. */
+.portal.portal {
+  --secondary-bg: #f7c873;
+  --secondary-text: #1a2238;
+  --popover: #fffbe6;
+  --control-border: #6b819b;
+  --status-success: #225c46;
+  --status-success-bg: #d9ebe2;
+  --status-warning: #77531a;
+  --status-warning-bg: #f7e9c9;
+  --status-danger: #873d60;
+  --status-danger-bg: #f3dfe8;
+  --status-info: #304d8b;
+  --status-info-bg: #d5e1f3;
+  color-scheme: light;
 }
-
-:global(.staff-shell .portal-brand-row .brand-name) {
-  color: var(--ink);
+:global(html[data-color-mode="dark"]) .portal.portal {
+  --secondary-bg: #ffe066;
+  --secondary-text: #23243a;
+  --popover: #23243a;
+  --control-border: #6a7898;
+  --status-success: #9dd6bb;
+  --status-success-bg: #203d35;
+  --status-warning: #ffe066;
+  --status-warning-bg: #403721;
+  --status-danger: #f0b2ca;
+  --status-danger-bg: #432a3c;
+  --status-info: #bccdf0;
+  --status-info-bg: #283858;
+  --shadow-popover: 0 18px 48px #08091166, 0 2px 8px #08091133;
+  color-scheme: dark;
 }
-
-:global(.staff-shell .portal-topbar .portal-navigation) {
-  background: transparent;
-  border-bottom: none;
-  position: static;
-  height: auto;
-  padding: 0;
-  margin: 0 auto 0 8px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  overflow-x: auto;
-  white-space: nowrap;
-  scrollbar-width: none;
+.portal.portal :global(:is(.portal-navigation, .portal-subsections) a[aria-current="page"]) {
+  background: var(--secondary-bg);
+  color: var(--secondary-text);
+  box-shadow: none;
 }
-:global(.staff-shell .portal-topbar .portal-navigation::-webkit-scrollbar) {
-  display: none;
+.portal.portal :global(:is(.button.secondary, .button.gold)) {
+  background: var(--secondary-bg);
+  border-color: var(--secondary-bg);
+  color: var(--secondary-text);
 }
-:global(.staff-shell .portal-navigation) {
-  background: var(--surface);
-  border-bottom: 1px solid var(--line);
+.portal.portal :global(:is(.button.secondary, .button.gold):hover) {
+  background: color-mix(in srgb, var(--secondary-bg) 88%, var(--ink));
+  border-color: var(--secondary-bg);
+  color: var(--secondary-text);
 }
-:global(.staff-shell .portal-navigation a) {
-  color: var(--muted);
-  border-radius: 9999px;
-  font-weight: 550;
-  padding: 6px 16px;
-  text-decoration: none;
-  transition: all 140ms ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1.4;
-  font-size: 13px;
+.portal.portal :global(:is(.workspace-tabs button, .segmented button)[aria-selected="true"]),
+.portal.portal :global(:is(.workspace-tabs button.selected, .segmented button[aria-pressed="true"])) {
+  background: var(--secondary-bg);
+  border-color: var(--secondary-bg);
+  color: var(--secondary-text);
 }
-:global(.staff-shell .portal-navigation a:hover) {
-  background: var(--portal-hover);
-  color: var(--ink);
-}
-:global(.staff-shell .portal-navigation a:is([aria-current="page"], .current)) {
-  background: var(--action-bg);
-  color: #ffffff;
-  font-weight: 600;
-  border-radius: 9999px;
-  box-shadow: 0 1px 4px rgba(36, 85, 182, 0.25);
-}
-
-:global(.staff-shell .search-entry) {
-  width: 38px;
-  height: 38px;
-  min-width: 38px;
-  min-height: 38px;
-  padding: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  color: var(--ink);
-  border-radius: 50%;
-  transition: all 140ms ease;
-}
-:global(.staff-shell .search-entry :is(span, kbd)) {
-  display: none;
-}
-:global(.staff-shell .search-entry .portal-icon) {
-  margin: 0;
-  color: var(--muted);
-  width: 18px;
-  height: 18px;
-}
-:global(.staff-shell .search-entry:hover) {
-  background: var(--surface-muted);
-  border-color: var(--gold);
-}
-:global(.staff-shell .search-entry:hover .portal-icon) {
-  color: var(--ink);
-}
-
-:global(.staff-shell .portal-subsections) {
-  background: var(--surface-muted);
-  border: 1px solid var(--line);
-  border-radius: 9999px;
-  padding: 4px;
-  display: flex;
-  gap: 4px;
-}
-:global(.staff-shell .portal-subsections a) {
-  color: var(--muted);
-  border-radius: 9999px;
-  font-weight: 550;
-  padding: 6px 14px;
-  font-size: 12px;
-  text-decoration: none;
-  transition: all 140ms ease;
-}
-:global(.staff-shell .portal-subsections a:hover) {
-  background: var(--surface);
-  color: var(--ink);
-}
-:global(.staff-shell .portal-subsections a:is([aria-current="page"], .current)) {
-  background: var(--surface);
-  color: var(--action-bg);
-  font-weight: 700;
-  border-radius: 9999px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-}
-
-:global(.staff-shell .account-menu) {
-  background: var(--surface);
-  border: 1px solid var(--line);
+.portal.portal :global(:is(.account-menu, .attention-panel, .command-dialog)) {
+  background: var(--popover);
+  border-color: var(--line);
   box-shadow: var(--shadow-popover);
-  color: var(--ink);
 }
-:global(.staff-shell .account-menu a) {
-  color: var(--ink);
-}
-:global(.staff-shell .account-menu a:hover) {
-  background: var(--surface-muted);
-}
-
-/* Bento Cards, Workspace Panels & Sections (Light Mode) */
-:global(.staff-shell .bento-card),
-:global(.staff-shell .workspace-panel),
-:global(.staff-shell .panel),
-:global(.staff-shell .crm-detail),
-:global(.staff-shell .directory-preview),
-:global(.staff-shell .member-register-workspace) {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  box-shadow: 0 1px 3px rgba(18, 43, 74, 0.05);
-  color: var(--ink);
-}
-
-:global(.staff-shell .service-shortcuts a) {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  padding: 18px 20px;
-  box-shadow: 0 1px 3px rgba(18, 43, 74, 0.05);
-  transition: all 160ms cubic-bezier(.23, 1, .32, 1);
-}
-:global(.staff-shell .service-shortcuts a:hover) {
-  background: var(--surface);
-  border-color: var(--portal-focus);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(18, 43, 74, 0.08);
-}
-:global(.staff-shell .service-shortcuts strong) {
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--ink);
-  letter-spacing: -0.02em;
-}
-:global(.staff-shell .service-shortcuts .metric-label) {
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 500;
-}
-:global(.staff-shell .service-shortcuts .metric-icon) {
-  color: var(--accent-text);
-  width: 22px;
-  height: 22px;
-}
-
-:global(.staff-shell .button),
-:global(.staff-shell .button.gold),
-:global(.staff-shell button[type="submit"]),
-:global(.staff-shell .form-actions .button:not(.secondary)) {
-  background: var(--action-bg);
-  color: var(--action-text);
-  font-weight: 600;
-  border: 1px solid var(--action-bg);
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(36, 85, 182, 0.2);
-  transition: all 140ms ease;
-}
-:global(.staff-shell .button:hover),
-:global(.staff-shell .button.gold:hover),
-:global(.staff-shell button[type="submit"]:hover),
-:global(.staff-shell .form-actions .button:not(.secondary):hover) {
-  background: var(--action-hover);
-  border-color: var(--action-hover);
-  box-shadow: 0 2px 8px rgba(36, 85, 182, 0.3);
-  transform: translateY(-1px);
-}
-
-:global(.staff-shell .button.secondary),
-:global(.staff-shell a.button.secondary) {
-  background: var(--surface);
-  color: var(--ink);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-}
-:global(.staff-shell .button.secondary:hover),
-:global(.staff-shell a.button.secondary:hover) {
-  background: var(--surface-muted);
-  border-color: var(--muted);
-}
-
-:global(.staff-shell button:not(.button):not([class*="link"]):not(.segmented button)),
-:global(.staff-shell .workspace-tabs button) {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  color: var(--muted);
-  border-radius: 8px;
-  transition: all 140ms ease;
-}
-:global(.staff-shell button:not(.button):not([class*="link"]):not(.segmented button):hover),
-:global(.staff-shell .workspace-tabs button:hover) {
-  background: var(--surface-muted);
-  border-color: var(--portal-focus);
-  color: var(--ink);
-}
-:global(.staff-shell .workspace-tabs button:is([aria-selected="true"], .active)),
-:global(.staff-shell .segmented button[aria-pressed="true"]) {
-  background: var(--action-bg);
-  color: var(--action-text);
-  border-color: var(--action-bg);
-  font-weight: 600;
-  border-radius: 9999px;
-  box-shadow: 0 1px 4px rgba(36, 85, 182, 0.2);
-}
-
-:global(.staff-shell input:not([type="checkbox"]):not([type="radio"])),
-:global(.staff-shell select),
-:global(.staff-shell textarea) {
+.portal.portal :global(:is(input:not([type="checkbox"]):not([type="radio"]), select, textarea)) {
+  border-color: var(--control-border);
+  border-radius: var(--radius-control);
   background: var(--control);
-  border: 1px solid var(--line);
   color: var(--ink);
-  border-radius: 8px;
-  padding: 10px 14px;
-  font-size: 14px;
-  transition: all 140ms ease;
 }
-:global(.staff-shell input:focus),
-:global(.staff-shell select:focus),
-:global(.staff-shell textarea:focus) {
-  border-color: var(--portal-focus);
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(57, 114, 223, 0.2);
-}
-
-:global(.staff-shell table),
-:global(.staff-shell .operations-table),
-:global(.staff-shell .member-register-table) {
+.portal.portal :global(:is(input, select, textarea)[aria-invalid="true"]) { border-color: var(--status-danger); }
+.portal.portal :global(:is(.bento-card, .workspace-panel, .crm-detail, .directory-preview, .member-register-workspace, .member-form-card, .member-event-card, .address-section)) {
+  border-color: var(--line);
+  border-radius: var(--radius-panel);
   background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  border-collapse: separate;
-  border-spacing: 0;
-  overflow: hidden;
-  width: 100%;
+  box-shadow: none;
 }
-:global(.staff-shell th) {
-  background: var(--surface-muted);
-  color: var(--muted);
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--line);
-}
-:global(.staff-shell td) {
-  border-bottom: 1px solid var(--line);
-  color: var(--ink);
-  padding: 12px 16px;
-  font-size: 13px;
-}
-:global(.staff-shell tbody tr:hover td) {
-  background: var(--surface-muted);
-}
-
-:global(.staff-shell .record-list),
-:global(.staff-shell .review-list) {
-  background: var(--surface-muted);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 8px;
-}
-:global(.staff-shell .record-list button),
-:global(.staff-shell .review-list button) {
+.portal.portal :global(:is(.service-metrics a, .member-service-tile)) {
   background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  color: var(--ink);
-  margin-bottom: 6px;
-  transition: all 140ms ease;
+  border-color: var(--line);
+  border-radius: var(--radius-panel);
+  box-shadow: none;
 }
-:global(.staff-shell .record-list button:hover),
-:global(.staff-shell .review-list button:hover) {
+.portal.portal :global(:is(.service-metrics a, .member-service-tile):hover) {
   background: var(--portal-hover);
-  border-color: var(--gold);
+  border-color: var(--link);
+  transform: none;
 }
-:global(.staff-shell .record-list button:is(.selected, [aria-pressed="true"], [aria-selected="true"])),
-:global(.staff-shell .review-list button:is(.selected, [aria-pressed="true"], [aria-selected="true"])) {
-  background: var(--portal-active);
-  border-color: var(--action-bg);
-  color: var(--action-bg);
-  box-shadow: 0 0 10px rgba(36, 85, 182, 0.15);
-}
-
-:global(.staff-shell .status-new) {
-  background: #eff6ff;
-  color: #1d4ed8;
-  border: 1px solid #bfdbfe;
-  border-radius: 9999px;
-  padding: 3px 10px;
-}
-:global(.staff-shell .status-contacted) {
-  background: #fffbeb;
-  color: #b45309;
-  border: 1px solid #fde68a;
-  border-radius: 9999px;
-  padding: 3px 10px;
-}
-:global(.staff-shell .status-closed) {
-  background: #ecfdf5;
-  color: #047857;
-  border: 1px solid #a7f3d0;
-  border-radius: 9999px;
-  padding: 3px 10px;
-}
-:global(.staff-shell .status-badge) {
-  border-radius: 9999px;
-  font-weight: 600;
-}
-
-:global(.staff-shell .portal-activity-list li) {
-  border-bottom: 1px solid var(--line);
-  color: var(--muted);
-  padding: 12px 0;
-}
-:global(.staff-shell .portal-activity-list strong) {
+.portal.portal :global(:is(.service-metrics .metric-icon, .empty-state .portal-icon, .verification-status)) { color: var(--link); }
+.portal.portal :global(:is(.account-menu, .attention-panel, .portal-topbar) .brand-name) { color: var(--ink); }
+.portal.portal :global(:is(.record-list, .review-list) button:is(.selected, [aria-pressed="true"])) {
+  background: var(--portal-hover);
   color: var(--ink);
+  box-shadow: inset 3px 0 var(--secondary-bg);
 }
-:global(.staff-shell .portal-activity-list time) {
-  color: var(--muted);
+.portal.portal :global(th) { background: var(--surface-muted); color: var(--muted); }
+.portal.portal :global(td) { border-color: var(--line); color: var(--ink); }
+.portal.portal :global(tbody tr:hover td) { background: var(--portal-hover); }
+.portal.portal :global(:is(.status-new, .status-contacted, .status-closed)) { border: 1px solid currentColor; }
+.portal.portal :global(.status-new) { color: var(--status-info); background: var(--status-info-bg); }
+.portal.portal :global(.status-contacted) { color: var(--status-warning); background: var(--status-warning-bg); }
+.portal.portal :global(.status-closed) { color: var(--status-success); background: var(--status-success-bg); }
+/* The header's navigation scrolls within available space; utilities never spill
+   beyond the viewport on narrow screens. */
+.portal.portal :global(.portal-topbar > .portal-navigation) {
+  position: static;
+  flex: 1 1 0;
+  min-width: 0;
+  width: auto;
+  top: auto;
+  padding-inline: 0;
+  background: transparent;
+  border-bottom: 0;
 }
-
-:global(.staff-shell .notice),
-:global(.staff-shell .empty-state),
-:global(.staff-shell .review-empty) {
-  background: var(--surface-muted);
-  border: 1px solid var(--line);
-  color: var(--ink);
-  border-radius: 12px;
+.portal.portal :global(.portal-topbar > .portal-utilities) { flex: 0 0 auto; }
+@media (max-width: 800px) {
+  .portal.portal :global(.portal-topbar .search-entry) { flex: 0 0 40px; min-width: 40px; }
 }
-
-/* ==============================================================================
-   DARK MODE (STARRY NIGHT) — ADMIN & STAFF WORKSPACES
-   Deep cosmic midnight, twilight blue-slate cards, electric blue sparklines,
-   and starlight radiant yellow accents.
-   ============================================================================== */
-:global(html[data-color-mode="dark"]) .portal:global(.staff-shell),
-:global(html[data-color-mode="dark"]) :global(.staff-shell) {
-  --navy: #f8fafc;
-  --gold: #facc15;
-  --paper: #0b0f19;
-  --ink: #f8fafc;
-  --muted: #8a9bb2;
-  --line: #1f2d4a;
-  --surface: #131b2e;
-  --surface-muted: #101726;
-  --control: #172138;
-  --link: #60a5fa;
-  --accent-text: #facc15;
-  --action-bg: #facc15;
-  --action-hover: #fde047;
-  --action-text: #0b0f19;
-  --portal-active: #facc15;
-  --portal-focus: #3b82f6;
-  --portal-sidebar: #0d1322;
-  --portal-hover: #1b2640;
-  --radius-control: 8px;
-  --radius-panel: 14px;
-  --shadow-popover: 0 16px 36px rgba(0, 0, 0, 0.6), 0 0 1px rgba(250, 204, 21, 0.2);
-  --status-success: #34d399;
-  --status-success-bg: #064e3b;
-  --status-warning: #fbbf24;
-  --status-warning-bg: #451a03;
-  --status-danger: #f87171;
-  --status-danger-bg: #450a0a;
-  --status-info: #60a5fa;
-  --status-info-bg: #1e3a5f;
-  background-color: #0b0f19 !important;
-  color: #f8fafc !important;
-}
-
-/* Canvas & Ambient Starry Glow */
-:global(html[data-color-mode="dark"]) :global(.staff-shell),
-:global(html[data-color-mode="dark"]) :global(.staff-shell .staff-content),
-:global(html[data-color-mode="dark"]) :global(.staff-shell .workspace-main) {
-  background-color: #0b0f19 !important;
-  background-image: 
-    radial-gradient(circle at 85% 15%, rgba(59, 130, 246, 0.07) 0%, transparent 45%),
-    radial-gradient(circle at 15% 85%, rgba(250, 204, 21, 0.04) 0%, transparent 40%) !important;
-  color: #f8fafc !important;
-}
-
-/* Topbar & Header */
-:global(html[data-color-mode="dark"]) :global(.staff-shell .portal-topbar),
-:global(html[data-color-mode="dark"]) :global(.staff-shell .workspace-topbar) {
-  background: #0d1322 !important;
-  border-bottom: 1px solid #1f2d4a !important;
-  color: #f8fafc !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell .portal-brand-row .brand-name) {
-  color: #f8fafc !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell .search-entry) {
-  background: #172138 !important;
-  border: 1px solid #243556 !important;
-  color: #f8fafc !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell .search-entry .portal-icon) {
-  color: #8a9bb2 !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell .search-entry:hover) {
-  background: #202e4d !important;
-  border-color: #3b527d !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell .search-entry:hover .portal-icon) {
-  color: #f8fafc !important;
-}
-
-:global(html[data-color-mode="dark"]) :global(.staff-shell .account-menu) {
-  background: #111a2e !important;
-  border: 1px solid #243556 !important;
-  box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.6) !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell .account-menu a) {
-  color: #cbd5e1 !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell .account-menu a:hover) {
-  background: #192744 !important;
-  color: #f8fafc !important;
-}
-
-:global(html[data-color-mode="dark"]) :global(.staff-shell .portal-navigation) {
-  background: #0d1322 !important;
-  border-bottom: 1px solid #1f2d4a !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell .portal-navigation a) {
-  color: #8a9bb2 !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell .portal-navigation a:hover) {
-  background: #16223a !important;
-  color: #f8fafc !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell .portal-navigation a:is([aria-current="page"], .current)) {
-  background: #facc15 !important;
-  color: #0b0f19 !important;
-  font-weight: 700 !important;
-  box-shadow: 0 0 16px rgba(250, 204, 21, 0.3) !important;
-}
-
-:global(html[data-color-mode="dark"]) :global(.staff-shell .portal-subsections) {
-  background: #101726 !important;
-  border: 1px solid #1f2d4a !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell .portal-subsections a) {
-  color: #8a9bb2 !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell .portal-subsections a:hover) {
-  background: #16223a !important;
-  color: #f8fafc !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell .portal-subsections a:is([aria-current="page"], .current)) {
-  background: #facc15 !important;
-  color: #0b0f19 !important;
-  font-weight: 700 !important;
-  box-shadow: 0 0 12px rgba(250, 204, 21, 0.25) !important;
-}
-
-/* Bento Cards, Workspace Panels & Sections (Dark Mode) */
-:global(html[data-color-mode="dark"]) :global(.staff-shell .bento-card),
-:global(html[data-color-mode="dark"]) :global(.staff-shell .workspace-panel),
-:global(html[data-color-mode="dark"]) :global(.staff-shell .panel),
-:global(html[data-color-mode="dark"]) :global(.staff-shell .crm-detail),
-:global(html[data-color-mode="dark"]) :global(.staff-shell .directory-preview),
-:global(html[data-color-mode="dark"]) :global(.staff-shell .member-register-workspace) {
-  background: #131b2e !important;
-  border: 1px solid #1f2d4a !important;
-  border-radius: 14px !important;
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.45) !important;
-  color: #e2e8f0 !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell h1),
-:global(html[data-color-mode="dark"]) :global(.staff-shell h2),
-:global(html[data-color-mode="dark"]) :global(.staff-shell h3),
-:global(html[data-color-mode="dark"]) :global(.staff-shell h4) {
-  color: #ffffff !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell p),
-:global(html[data-color-mode="dark"]) :global(.staff-shell .portal-page-intro p),
-:global(html[data-color-mode="dark"]) :global(.staff-shell .metric-label) {
-  color: #8a9bb2 !important;
-}
-
-:global(html[data-color-mode="dark"]) :global(.staff-shell .service-shortcuts a) {
-  background: #131b2e !important;
-  border: 1px solid #1f2d4a !important;
-  border-radius: 14px !important;
-  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.4) !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell .service-shortcuts a:hover) {
-  background: #17223b !important;
-  border-color: #3b82f6 !important;
-  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5), 0 0 14px rgba(59, 130, 246, 0.2) !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell .service-shortcuts strong) {
-  color: #ffffff !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell .service-shortcuts .metric-label) {
-  color: #8a9bb2 !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell .service-shortcuts .metric-icon) {
-  color: #60a5fa !important;
-}
-
-:global(html[data-color-mode="dark"]) :global(.staff-shell .button),
-:global(html[data-color-mode="dark"]) :global(.staff-shell .button.gold),
-:global(html[data-color-mode="dark"]) :global(.staff-shell button[type="submit"]),
-:global(html[data-color-mode="dark"]) :global(.staff-shell .form-actions .button:not(.secondary)) {
-  background: #facc15 !important;
-  color: #0b0f19 !important;
-  font-weight: 700 !important;
-  border: 1px solid #facc15 !important;
-  box-shadow: 0 0 14px rgba(250, 204, 21, 0.25) !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell .button:hover),
-:global(html[data-color-mode="dark"]) :global(.staff-shell .button.gold:hover),
-:global(html[data-color-mode="dark"]) :global(.staff-shell button[type="submit"]:hover),
-:global(html[data-color-mode="dark"]) :global(.staff-shell .form-actions .button:not(.secondary):hover) {
-  background: #fde047 !important;
-  border-color: #fde047 !important;
-  box-shadow: 0 0 20px rgba(250, 204, 21, 0.4) !important;
-}
-
-:global(html[data-color-mode="dark"]) :global(.staff-shell .button.secondary),
-:global(html[data-color-mode="dark"]) :global(.staff-shell a.button.secondary) {
-  background: linear-gradient(180deg, #2563eb, #1d4ed8) !important;
-  color: #ffffff !important;
-  border: 1px solid #3b82f6 !important;
-  box-shadow: 0 2px 10px rgba(37, 99, 235, 0.3) !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell .button.secondary:hover),
-:global(html[data-color-mode="dark"]) :global(.staff-shell a.button.secondary:hover) {
-  background: linear-gradient(180deg, #3b82f6, #2563eb) !important;
-  border-color: #60a5fa !important;
-}
-
-:global(html[data-color-mode="dark"]) :global(.staff-shell button:not(.button):not([class*="link"]):not(.segmented button)),
-:global(html[data-color-mode="dark"]) :global(.staff-shell .workspace-tabs button) {
-  background: #172138 !important;
-  border: 1px solid #243556 !important;
-  color: #cbd5e1 !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell button:not(.button):not([class*="link"]):not(.segmented button):hover),
-:global(html[data-color-mode="dark"]) :global(.staff-shell .workspace-tabs button:hover) {
-  background: #1e2b47 !important;
-  border-color: #3b82f6 !important;
-  color: #ffffff !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell .workspace-tabs button:is([aria-selected="true"], .active)),
-:global(html[data-color-mode="dark"]) :global(.staff-shell .segmented button[aria-pressed="true"]) {
-  background: #facc15 !important;
-  color: #0b0f19 !important;
-  border-color: #facc15 !important;
-  font-weight: 700 !important;
-  border-radius: 9999px !important;
-  box-shadow: 0 0 12px rgba(250, 204, 21, 0.25) !important;
-}
-
-:global(html[data-color-mode="dark"]) :global(.staff-shell input:not([type="checkbox"]):not([type="radio"])),
-:global(html[data-color-mode="dark"]) :global(.staff-shell select),
-:global(html[data-color-mode="dark"]) :global(.staff-shell textarea) {
-  background: #172138 !important;
-  border: 1px solid #243556 !important;
-  color: #f8fafc !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell input::placeholder),
-:global(html[data-color-mode="dark"]) :global(.staff-shell textarea::placeholder) {
-  color: #64748b !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell input:focus),
-:global(html[data-color-mode="dark"]) :global(.staff-shell select:focus),
-:global(html[data-color-mode="dark"]) :global(.staff-shell textarea:focus) {
-  border-color: #3b82f6 !important;
-  outline: none !important;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.35) !important;
-  background: #19243d !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell label) {
-  color: #8a9bb2 !important;
-}
-
-:global(html[data-color-mode="dark"]) :global(.staff-shell table),
-:global(html[data-color-mode="dark"]) :global(.staff-shell .operations-table),
-:global(html[data-color-mode="dark"]) :global(.staff-shell .member-register-table) {
-  background: #131b2e !important;
-  border: 1px solid #1f2d4a !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell th) {
-  background: #101726 !important;
-  color: #8a9bb2 !important;
-  border-bottom: 1px solid #1f2d4a !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell td) {
-  border-bottom: 1px solid #172138 !important;
-  color: #e2e8f0 !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell tbody tr:hover td) {
-  background: #17223b !important;
-}
-
-:global(html[data-color-mode="dark"]) :global(.staff-shell .record-list),
-:global(html[data-color-mode="dark"]) :global(.staff-shell .review-list) {
-  background: #101726 !important;
-  border: 1px solid #1f2d4a !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell .record-list button),
-:global(html[data-color-mode="dark"]) :global(.staff-shell .review-list button) {
-  background: #131b2e !important;
-  border: 1px solid #1f2d4a !important;
-  color: #cbd5e1 !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell .record-list button:hover),
-:global(html[data-color-mode="dark"]) :global(.staff-shell .review-list button:hover) {
-  background: #17223b !important;
-  border-color: #2b3d63 !important;
-  color: #ffffff !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell .record-list button:is(.selected, [aria-pressed="true"], [aria-selected="true"])),
-:global(html[data-color-mode="dark"]) :global(.staff-shell .review-list button:is(.selected, [aria-pressed="true"], [aria-selected="true"])) {
-  background: #182847 !important;
-  border-color: #3b82f6 !important;
-  color: #ffffff !important;
-  box-shadow: 0 0 14px rgba(59, 130, 246, 0.25) !important;
-}
-
-:global(html[data-color-mode="dark"]) :global(.staff-shell .status-new) {
-  background: #172554 !important;
-  color: #93c5fd !important;
-  border: 1px solid #1e40af !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell .status-contacted) {
-  background: #422006 !important;
-  color: #fde047 !important;
-  border: 1px solid #713f12 !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell .status-closed) {
-  background: #022c22 !important;
-  color: #6ee7b7 !important;
-  border: 1px solid #065f46 !important;
-}
-
-:global(html[data-color-mode="dark"]) :global(.staff-shell .portal-activity-list li) {
-  border-bottom: 1px solid #1a243b !important;
-  color: #cbd5e1 !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell .portal-activity-list strong) {
-  color: #ffffff !important;
-}
-:global(html[data-color-mode="dark"]) :global(.staff-shell .portal-activity-list time) {
-  color: #64748b !important;
-}
-
-:global(html[data-color-mode="dark"]) :global(.staff-shell .notice),
-:global(html[data-color-mode="dark"]) :global(.staff-shell .empty-state),
-:global(html[data-color-mode="dark"]) :global(.staff-shell .review-empty) {
-  background: #131b2e !important;
-  border: 1px solid #22375d !important;
-  color: #94a3b8 !important;
-}
-
-:global(html[data-color-mode="dark"]) :global(.staff-shell .staff-sidebar) {
-  background: #0d1322 !important;
-  border-right: 1px solid #1f2d4a !important;
-}
-
-

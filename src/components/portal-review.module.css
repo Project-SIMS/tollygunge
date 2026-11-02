@@ -4,15 +4,15 @@
 .review.review {
   --review-radius: 12px;
   --review-control: 7px;
-  --review-border: #75849c;
-  --review-tint: #edf3ff;
-  --review-tint-ink: #2455b6;
+  --review-border: var(--control-border);
+  --review-tint: var(--surface-muted);
+  --review-tint-ink: var(--link);
   min-width: 0;
 }
 :global(html[data-color-mode="dark"]) .review.review {
-  --review-border: #7186a5;
-  --review-tint: #223653;
-  --review-tint-ink: #b6ceff;
+  --review-border: var(--control-border);
+  --review-tint: var(--surface-muted);
+  --review-tint-ink: var(--link);
 }
 .heading { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin: 0 0 12px; }
 .kicker { display: block; color: var(--accent-text); font-size: 11px; font-weight: 650; line-height: 1.5; letter-spacing: .13em; text-transform: uppercase; }

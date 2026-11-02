@@ -558,10 +558,10 @@
 }
 
 .horizontal {
-  --control-border: #75849c;
+  --control-border: #6b819b;
 }
 :global(html[data-color-mode="dark"]) .horizontal {
-  --control-border: #7186a5;
+  --control-border: #6a7898;
 }
 .horizontal :global(:is(input, select, textarea)) {
   --line: var(--control-border);
