@@ -169,10 +169,6 @@ export function WebsiteControl() {
   const tabs = ["shared", "home", "link", "document"];
   return (
     <>
-      <p>
-        Manage the public website here. Saving keeps changes private; publishing
-        updates the website.
-      </p>
       <div
         className="workspace-tabs"
         role="tablist"

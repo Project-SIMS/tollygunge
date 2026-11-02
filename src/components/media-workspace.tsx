@@ -78,11 +78,6 @@ export function MediaWorkspace() {
   }
   return (
     <>
-      <p>
-        Upload editorial images, review their descriptions, then explicitly
-        publish them to Resources → Media. Upload only images you have
-        permission to publish. Application documents are excluded.
-      </p>
       <details className="workspace-notice-disclosure"><summary>Publication and image replacement</summary><p>
         Published assets appear in Resources. The landing page uses the text-led Paper v3 design.
         Save changes, then publish to update public descriptions. Image

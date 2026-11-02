@@ -129,11 +129,6 @@ export function CrmWorkspace() {
   }
   return (
     <>
-      <p>
-        Public website and account inquiries arrive here. Contact details are
-        supplied by the sender; public submissions do not verify an email
-        address or create membership.
-      </p>
       <form
         className="crm-filters"
         onSubmit={(event) => {

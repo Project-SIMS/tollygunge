@@ -78,10 +78,6 @@ export function MemberEvents() {
       >
         <div>
           <h2 id="member-events-list-title">Your events</h2>
-          <p>
-            Discover upcoming events and keep track of your registrations and
-            attendance.
-          </p>
         </div>
         <label>
           Event period

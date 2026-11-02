@@ -171,11 +171,6 @@ export function MemberRegister({
       {personId && (
         <Link href="/admin/workspaces/members">View all members →</Link>
       )}
-      <p>
-        Membership records and TPA accounts in one directory. Accounts without a
-        membership are labelled Account only. Email verification, reviewed
-        profiles and membership status are separate.
-      </p>
       <form
         className="action-row member-register-filters"
         onSubmit={(e) => {

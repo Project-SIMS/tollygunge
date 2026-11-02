@@ -90,11 +90,6 @@ export function VerificationWorkspace() {
   return (
     <>
       {guard.dialog}
-      <p className="verification-intro">
-        A Verified profile is independent from email verification, paid
-        membership and public publication. Publishing requirements preserves
-        existing badges.
-      </p>
       <div role="tablist" aria-label="Verification tools" className="workspace-tabs">
         {["Review queue", "Requirements", "History"].map((t) => (
           <button

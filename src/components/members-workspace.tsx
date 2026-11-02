@@ -173,12 +173,6 @@ function AccountDirectory() {
   }
   return (
     <>
-      <p className="notice">
-        Account directory for authorized membership staff. An account or
-        verified email is not an approved membership. Paid application review
-        remains pending approved terms and payment verification; private
-        application drafts are excluded.
-      </p>
       <form className="crm-filters" onSubmit={submit}>
         <label className="crm-search">
           Search accounts

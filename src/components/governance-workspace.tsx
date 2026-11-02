@@ -110,10 +110,6 @@ export function GovernanceWorkspace() {
   }
   return (
     <>
-      <p>
-        One person, multiple responsibilities. Personal verification and public
-        publication are separate.
-      </p>
       <div
         className="workspace-tabs"
         role="tablist"

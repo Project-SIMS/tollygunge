@@ -550,11 +550,6 @@ export function ApplicationDraft({
   }
   return (
     <div className="member-journey">
-      <p className="member-form-intro">
-        Profile verification confirms reviewed details. Membership approval and
-        payments are separate. Only fields marked * are required for your
-        profile review.
-      </p>
       {status && (
         <>
           <VerifyEmail email={status.email} verified={status.emailVerified} />
