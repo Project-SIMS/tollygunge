@@ -4,9 +4,8 @@ import layout from "./portal-horizontal.module.css";
 export function PortalFrame({ staff, children }: { staff: boolean; children: React.ReactNode }) {
   return (
     <div
-      className={`${styles.portal} ${layout.horizontal} workspace ${staff ? "staff-shell starry-night" : "member-shell"}`}
+      className={`${styles.portal} ${layout.horizontal} workspace ${staff ? "staff-shell" : "member-shell"}`}
       data-navigation="horizontal"
-      data-theme={staff ? "starry-night" : undefined}
     >
       {children}
     </div>

@@ -1,5 +1,5 @@
 "use client";
-import { MemberEditor } from "./member-editor";
+import { MemberEditor, MemberCreator } from "./member-editor";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
@@ -54,13 +54,20 @@ export function MemberRegister({
   canManage?: boolean;
   canViewPayments?: boolean;
 }) {
-  const personId = useSearchParams().get("personId");
+  const searchParams = useSearchParams();
+  const personId = searchParams.get("personId");
+  const actionParam = searchParams.get("action");
+  const newParam = searchParams.get("new");
   const [editorDirty, setEditorDirty] = useState(false);
   const editorGuard = useEmailEditGuard(editorDirty);
+  const [isCreating, setIsCreating] = useState(false);
+  const createButton = useRef<HTMLButtonElement | null>(null);
+  const createHeading = useRef<HTMLHeadingElement>(null);
   const closeDetails = () =>
     editorGuard.proceed(() => {
       setEditorDirty(false);
       setSelected(undefined);
+      setIsCreating(false);
     });
   const [data, setData] = useState<Register>(),
     [q, setQ] = useState(""),
@@ -74,6 +81,15 @@ export function MemberRegister({
     [contact, setContact] = useState("all"),
     [message, setMessage] = useState(""),
     [selected, setSelected] = useState<Member>();
+  useEffect(() => {
+    if (isCreating) createHeading.current?.focus();
+  }, [isCreating]);
+  useEffect(() => {
+    if (canManage && (actionParam === "create" || newParam === "true")) {
+      setSelected(undefined);
+      setIsCreating(true);
+    }
+  }, [actionParam, newParam, canManage]);
   async function load(
     offset = 0,
     filters = { q, status, invitation, kind, verification, review, contact },
@@ -83,6 +99,7 @@ export function MemberRegister({
       editorGuard.proceed(() => {
         setEditorDirty(false);
         setSelected(undefined);
+        setIsCreating(false);
         void load(offset, filters, true);
       });
       return;
@@ -262,12 +279,28 @@ export function MemberRegister({
       <div className="member-register-resultbar">
         <p>{data ? `${data.total} directory records` : "Loading directory…"}</p>
         {canManage && (
-          <Link
-            className="button secondary"
-            href="/admin/workspaces/onboarding"
-          >
-            Import / retry member records
-          </Link>
+          <div className="action-row" style={{ margin: 0 }}>
+            <button
+              type="button"
+              className="button"
+              ref={createButton}
+              onClick={() => {
+                editorGuard.proceed(() => {
+                  setSelected(undefined);
+                  setEditorDirty(false);
+                  setIsCreating(true);
+                });
+              }}
+            >
+              + Create member
+            </button>
+            <Link
+              className="button secondary"
+              href="/admin/workspaces/onboarding"
+            >
+              Import / retry member records
+            </Link>
+          </div>
         )}
       </div>
       <div className="member-register-bulk">
@@ -387,7 +420,7 @@ export function MemberRegister({
                           profileVerified: m.professional_verified,
                           membershipStatus: m.status,
                         }}
-                        disabled={Boolean(selected)}
+                        disabled={Boolean(selected || isCreating)}
                         selected={Boolean(
                           selected && recordKey(selected) === recordKey(m),
                         )}
@@ -395,6 +428,7 @@ export function MemberRegister({
                           editorGuard.proceed(() => {
                             selectedButton.current = trigger;
                             setEditorDirty(false);
+                            setIsCreating(false);
                             setSelected(m);
                           })
                         }
@@ -501,7 +535,58 @@ export function MemberRegister({
             </div>
           )}
         </div>
-        {selected && (
+        {isCreating && (
+          <ProfileInspector
+            returnFocus={createButton}
+            label="Create new member"
+            onClose={closeDetails}
+          >
+            {editorGuard.dialog}
+            <section
+              id="member-register-detail"
+              className="member-register-detail"
+              aria-label="Create new member"
+            >
+              <div className="member-detail-heading">
+                <h3 ref={createHeading} tabIndex={-1}>
+                  Create new member
+                </h3>
+              </div>
+              <p>Add a member directly to the association directory.</p>
+              <MemberCreator
+                onDirtyChange={setEditorDirty}
+                onCancel={closeDetails}
+                onSaved={async (newPersonId) => {
+                  setEditorDirty(false);
+                  setIsCreating(false);
+                  await load(
+                    0,
+                    {
+                      q: "",
+                      status: "all",
+                      invitation: "all",
+                      kind: "all",
+                      verification: "all",
+                      contact: "all",
+                      review: "all",
+                    },
+                    true,
+                  );
+                  try {
+                    const result = await api<Register>(
+                      `/api/staff/members?view=register&records=all&id=${encodeURIComponent(newPersonId)}`,
+                    );
+                    if (result.rows.length) {
+                      setSelected(result.rows[0]);
+                    }
+                  } catch {}
+                  setMessage("Member created successfully.");
+                }}
+              />
+            </section>
+          </ProfileInspector>
+        )}
+        {selected && !isCreating && (
           <ProfileInspector
             returnFocus={selectedButton}
             label={`${selected.person.name} member details`}
