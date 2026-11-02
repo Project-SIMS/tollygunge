@@ -15,7 +15,7 @@ export default async function Page() {
     <SiteShell>
       <main id="main" className="page-content">
         <section className="login-panel">
-          <h1>Account security</h1>
+          <h1 className="sr-only">Account security</h1>
         <PortalSubsections />
           <PasswordUpdate signedIn />
           <p>

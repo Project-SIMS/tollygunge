@@ -16,7 +16,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<Rec
   return (
     <SiteShell>
       <main id="main" className="page-content">
-        <h1>Events & attendance</h1>
+        <h1 className="sr-only">Events & attendance</h1>
         <PortalSubsections />
         <MemberEvents />
       </main>

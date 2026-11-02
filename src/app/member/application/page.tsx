@@ -26,7 +26,7 @@ export default async function Page({
       <main id="main" className="member-content member-application">
         <div className="portal-page-intro">
           <header>
-            <h1>Your verification details</h1>
+            <h1 className="sr-only">Your verification details</h1>
           </header>
           <PortalSubsections />
         </div>

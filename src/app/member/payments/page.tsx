@@ -15,7 +15,7 @@ export default async function Page() {
       <main id="main" className="page-content">
         <div className="portal-page-intro">
           <header>
-            <h1>Association payment details</h1>
+            <h1 className="sr-only">Association payment details</h1>
           </header>
           <PortalSubsections />
         </div>

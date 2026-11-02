@@ -28,10 +28,7 @@ export default async function Page() {
       <main id="main" className="member-content member-profile-page">
         <div className="member-page-heading">
           <div>
-            <h1>Your professional profile</h1>
-            <p>
-              Update your professional details and public profile preferences.
-            </p>
+            <h1 className="sr-only">Your professional profile</h1>
           </div>
           <div className="member-account-identity">
             <span>Account email · private</span>

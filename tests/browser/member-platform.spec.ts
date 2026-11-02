@@ -269,22 +269,30 @@ test("address cascading resets descendants, resolves ambiguous PIN and supports 
   await office
     .getByRole("combobox", { name: "Postal locality", exact: true })
     .selectOption("Bankipore");
+  await expect(
+    office.getByRole("button", { name: "Fill from PIN", exact: true }),
+  ).toHaveCount(0);
+  await expect(office.locator(".address-location-grid > label")).toHaveText([
+    "PIN",
+    /Postal locality/,
+    /City/,
+    /District/,
+    /State \/ Union Territory/,
+    /Country/,
+  ]);
   await office.getByLabel("PIN", { exact: true }).fill("800001");
-  await office
-    .getByRole("button", { name: "Fill from PIN", exact: true })
-    .click();
   await expect(
     office.getByRole("combobox", {
-      name: "Postal locality for this PIN",
+      name: "Postal locality",
       exact: true,
     }),
   ).toBeVisible();
   await office
     .getByRole("combobox", {
-      name: "Postal locality for this PIN",
+      name: "Postal locality",
       exact: true,
     })
-    .selectOption("1");
+    .selectOption("Bankipore");
   await expect(
     office.getByRole("combobox", { name: "Postal locality", exact: true }),
   ).toHaveValue("Bankipore");
@@ -310,9 +318,6 @@ test("address cascading resets descendants, resolves ambiguous PIN and supports 
     office.getByRole("combobox", { name: "Postal locality", exact: true }),
   ).toContainText("No matching locations");
   await office.getByLabel("PIN", { exact: true }).fill("999999");
-  await office
-    .getByRole("button", { name: "Fill from PIN", exact: true })
-    .click();
   await expect(
     office.getByText(
       "No postal locality found for this PIN. Check the number and try again.",
@@ -372,9 +377,6 @@ test("lookup failure can retry; a late PIN response cannot overwrite a changed c
     .getByLabel("Address Line 1", { exact: true })
     .fill("Retained address text");
   await office.getByLabel("PIN", { exact: true }).fill("800001");
-  await office
-    .getByRole("button", { name: "Fill from PIN", exact: true })
-    .click();
   await office
     .getByRole("combobox", { name: "Country", exact: true })
     .selectOption("GB");
@@ -491,10 +493,10 @@ test("real postal reference persists a structured address and legacy text", asyn
   if (result.localities.length > 1)
     await residence
       .getByRole("combobox", {
-        name: "Postal locality for this PIN",
+        name: "Postal locality",
         exact: true,
       })
-      .selectOption("0");
+      .selectOption(result.localities[0].locality);
   await residence
     .getByLabel("Address Line 1", { exact: true })
     .fill("24 Synthetic Member Lane");

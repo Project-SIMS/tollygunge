@@ -163,7 +163,7 @@ export function AddressForm({
         setPinState({
           candidates,
           message: candidates.length
-            ? "This PIN serves multiple postal localities. Choose your locality below."
+            ? "This PIN serves multiple postal localities. Choose your postal locality above."
             : "No postal locality found for this PIN. Check the number and try again.",
         });
       }
@@ -266,8 +266,33 @@ export function AddressForm({
           value={address[field]}
           aria-invalid={!!errors[field]}
           aria-describedby={errors[field] ? `${id}-${field}-error` : undefined}
-          disabled={!enabled || loading || !!current?.error}
-          onChange={(e) => change(field, e.target.value)}
+          disabled={
+            !enabled ||
+            (!(field === "postalLocality" && pinState.candidates?.length) &&
+              (loading || !!current?.error))
+          }
+          onChange={(e) => {
+            const candidate =
+              field === "postalLocality"
+                ? pinState.candidates?.find(
+                    (c) => c.postalLocality === e.target.value,
+                  )
+                : undefined;
+            if (candidate) {
+              onChange({
+                ...address,
+                city:
+                  address.state === candidate.state &&
+                  address.district === candidate.district
+                    ? address.city
+                    : "",
+                ...candidate,
+              });
+              setPinState({
+                message: "Location filled from PIN. Review these details.",
+              });
+            } else change(field, e.target.value);
+          }}
         >
           <option value="">
             {!enabled
@@ -330,6 +355,61 @@ export function AddressForm({
             {address.country === "IN" ? "PIN code & Location" : "Location"}
           </h4>
           <div className="form-grid address-location-grid">
+            {input(
+              "postalCode",
+              address.country === "IN" ? "PIN" : "Postal code",
+              true,
+            )}
+            {address.country === "IN" && (
+              <div className="postal-assistance form-span">
+                <small>
+                  Enter your six-digit PIN to fill location details
+                  automatically. Choose a postal locality if prompted, then
+                  review the details.
+                </small>
+              </div>
+            )}
+            {address.country === "IN" ? (
+              <>
+                {select(
+                  "postalLocality",
+                  "Postal locality",
+                  [
+                    ...new Set(
+                      pinState.candidates?.map((c) => c.postalLocality) ||
+                        data?.localities.map((r) => r.locality) ||
+                        [],
+                    ),
+                  ].sort(),
+                  !!address.district || !!pinState.candidates?.length,
+                )}
+                {select("city", "City", data?.cities || [], !!address.district)}
+                {select(
+                  "district",
+                  "District",
+                  data?.districts || [],
+                  !!address.state,
+                )}
+                {select(
+                  "state",
+                  "State / Union Territory",
+                  data?.states || [],
+                  true,
+                )}
+                {data && address.district && !data.cities.length && (
+                  <small className="field-help form-span">
+                    City aliases are not available for this district. Select
+                    your postal locality; city is optional.
+                  </small>
+                )}
+              </>
+            ) : (
+              <>
+                {input("city", "City / locality", true)}
+                {input("district", "District (optional)", true)}
+                {input("state", "State / region", true)}
+              </>
+            )}
             <label htmlFor={`${id}-country`}>
               Country
               <select
@@ -344,72 +424,6 @@ export function AddressForm({
                 ))}
               </select>
             </label>
-            {input(
-              "postalCode",
-              address.country === "IN" ? "PIN" : "Postal code",
-              true,
-            )}
-            {address.country === "IN" && (
-              <div className="postal-assistance form-span">
-                <button
-                  type="button"
-                  className="button secondary"
-                  disabled={
-                    !/^[1-9]\d{5}$/.test(address.postalCode) || pinState.busy
-                  }
-                  onClick={resolvePin}
-                >
-                  {pinState.busy ? "Looking up…" : "Fill from PIN"}
-                </button>
-                <small>
-                  Enter your six-digit PIN to fill State and District
-                  automatically. Choose a postal locality if prompted, then
-                  review city and state.
-                </small>
-              </div>
-            )}
-            {address.country === "IN" ? (
-              <>
-                {select(
-                  "state",
-                  "State / Union Territory",
-                  data?.states || [],
-                  true,
-                )}
-                {select(
-                  "district",
-                  "District",
-                  data?.districts || [],
-                  !!address.state,
-                )}
-                {select(
-                  "city",
-                  "City",
-                  data?.cities || [],
-                  !!address.district,
-                )}
-                {select(
-                  "postalLocality",
-                  "Postal locality",
-                  [
-                    ...new Set(data?.localities.map((r) => r.locality) || []),
-                  ].sort(),
-                  !!address.district,
-                )}
-                {data && address.district && !data.cities.length && (
-                  <small className="field-help form-span">
-                    City aliases are not available for this district. Select
-                    your postal locality; city is optional.
-                  </small>
-                )}
-              </>
-            ) : (
-              <>
-                {input("state", "State / region", true)}
-                {input("district", "District (optional)", true)}
-                {input("city", "City / locality", true)}
-              </>
-            )}
           </div>
           {address.country === "IN" && (
             <>
@@ -436,7 +450,7 @@ export function AddressForm({
                     {[
                       ...new Set(
                         data.localities
-                           .filter((r) => r.locality === address.postalLocality)
+                          .filter((r) => r.locality === address.postalLocality)
                           .map((r) => r.pin),
                       ),
                     ].join(", ")}
@@ -451,41 +465,11 @@ export function AddressForm({
                     r.pin === address.postalCode,
                 ) && (
                   <p className="field-error" role="alert">
-                    This PIN does not match the selected postal locality. Use
-                    Fill from PIN or correct your selections.
+                    This PIN does not match the selected postal locality.
+                    Re-enter your PIN or correct your selections.
                   </p>
                 )}
               <p role="status">{pinState.message}</p>
-              {!!pinState.candidates?.length && (
-                <label>
-                  Postal locality for this PIN
-                  <select
-                    value=""
-                    onChange={(e) => {
-                      if (!e.target.value) return;
-                      const candidate =
-                        pinState.candidates?.[Number(e.target.value)];
-                      if (candidate) {
-                        onChange({ ...address, city: "", ...candidate });
-                        setPinState({
-                          message:
-                            "Location filled from PIN. Review these details.",
-                        });
-                      }
-                    }}
-                  >
-                    <option value="">Choose your locality…</option>
-                    {pinState.candidates.map((c, i) => (
-                      <option
-                        value={i}
-                        key={`${c.state}-${c.district}-${c.postalLocality}`}
-                      >
-                        {c.postalLocality} · {c.district} · {c.state}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              )}
             </>
           )}
         </>

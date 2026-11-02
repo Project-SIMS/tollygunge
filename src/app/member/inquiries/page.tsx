@@ -13,7 +13,7 @@ export default async function Page() {
   return (
     <SiteShell>
       <main id="main" className="page-content">
-        <h1>Contact the secretariat</h1>
+        <h1 className="sr-only">Contact the secretariat</h1>
         <PortalSubsections />
         <Inquiries />
       </main>
