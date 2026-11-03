@@ -17,10 +17,14 @@ export function WorkbookEventParticipants({ events, initialDate }: { events: Wor
       <label>Attendance status<select value={status} onChange={e => setStatus(e.target.value)}>{["Attended", "Not attended", "Not recorded", "all"].map(s => <option key={s} value={s}>{s === "all" ? "All listed members" : s}</option>)}</select></label>
       <label>Search members<input value={query} onChange={e => setQuery(e.target.value)} placeholder="Name, number or contact" /></label>
     </div>
-    {event?.title && <h3>{event.title}</h3>}
-    {event?.description && <p>{event.description}</p>}
-    {event?.location && <p>Venue: {event.location}</p>}
-    {event?.speakers && <p>Speakers: {event.speakers}</p>}
+    {event && (event.title || event.location || event.speakers || event.description) && <section className="attendance-event-summary" aria-label="Selected event" key={event.date}>
+      {event.title && <h3>{event.title}</h3>}
+      {(event.location || event.speakers) && <dl className="attendance-event-meta">
+        {event.location && <div><dt>Venue</dt><dd>{event.location}</dd></div>}
+        {event.speakers && <div><dt>Speakers</dt><dd><ul>{event.speakers.split(/[;\n]+/).map(name => name.trim()).filter(Boolean).map((name,index) => <li key={`${name}-${index}`}>{name}</li>)}</ul></dd></div>}
+      </dl>}
+      {event.description && <details className="attendance-event-description"><summary>Event details</summary><p>{event.description}</p></details>}
+    </section>}
     <p role="status">{rows.length} matching members · {event?.rows.filter(r => r.status === "Attended").length || 0} attended · {event?.rows.filter(r => r.status === "Not recorded").length || 0} not recorded</p>
     {rows.length ? <div className="table-wrap workbook-attendance-table" tabIndex={0} role="region" aria-label="Workbook event attendees">
       <table className="operations-table">

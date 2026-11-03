@@ -931,3 +931,71 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* Keep selected-event context secondary to the attendance register. */
+.horizontal.horizontal :global(.attendance-event-summary) {
+  min-width: 0;
+  margin: 0 0 16px;
+  padding: 0 0 16px;
+  border-bottom: 1px solid var(--line);
+}
+.horizontal.horizontal :global(.attendance-event-summary h3) {
+  margin: 0 0 14px;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.horizontal.horizontal :global(.attendance-event-meta) {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 16px 32px;
+  margin: 0;
+}
+.horizontal.horizontal :global(.attendance-event-meta dt) {
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.horizontal.horizontal :global(.attendance-event-meta dd) {
+  margin: 0;
+  color: var(--ink);
+  font-size: 12px;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+.horizontal.horizontal :global(.attendance-event-meta ul) {
+  display: grid;
+  gap: 3px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.horizontal.horizontal :global(.attendance-event-description) {
+  margin-top: 14px;
+}
+.horizontal.horizontal :global(.attendance-event-description summary) {
+  width: fit-content;
+  min-height: 32px;
+  padding: 6px 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+  cursor: pointer;
+}
+.horizontal.horizontal :global(.attendance-event-description p) {
+  max-width: 82ch;
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.75;
+  white-space: pre-line;
+}
+@media (max-width: 640px) {
+  .horizontal.horizontal :global(.attendance-event-meta) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
