@@ -558,6 +558,107 @@
   color: var(--muted);
   margin: 0;
 }
+/* Past-event cards: date, topic, metadata and poster each have a clear place. */
+.public-shell .public-information .event-row.historical-event-card {
+  display: block;
+  overflow: hidden;
+  padding: 0;
+  scroll-margin-top: 112px;
+}
+.public-shell .public-information .historical-event-card-header {
+  padding: 24px 28px;
+}
+.public-shell .public-information .historical-event-card .historical-event-date {
+  margin: 0 0 10px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: .04em;
+}
+.public-shell .public-information .historical-event-card h3 {
+  max-width: 38ch;
+  margin: 0;
+  font-size: clamp(24px, 2.7vw, 30px);
+  line-height: 1.2;
+  text-wrap: pretty;
+  overflow-wrap: anywhere;
+}
+.public-shell .public-information .historical-event-card > .historical-event-card-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 190px;
+  align-items: start;
+  gap: 28px;
+  padding: 24px 28px 28px;
+  border-top: 1px solid var(--line);
+}
+.public-shell .public-information .historical-event-copy {
+  min-width: 0;
+}
+.public-shell .public-information .historical-event-copy:only-child {
+  grid-column: 1 / -1;
+}
+.public-shell .public-information .historical-event-facts {
+  display: grid;
+  gap: 22px;
+  margin: 0;
+}
+.public-shell .public-information .historical-event-facts dt,
+.public-shell .public-information .historical-event-overview h4 {
+  margin: 0 0 8px;
+  font-family: var(--font-dm-sans), sans-serif;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.public-shell .public-information .historical-event-facts dd {
+  max-width: 65ch;
+  margin: 0;
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.public-shell .public-information .historical-event-facts ul {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.public-shell .public-information .historical-event-overview {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+.public-shell .public-information .historical-event-card .historical-event-overview p {
+  max-width: 65ch;
+  font-size: 13px;
+  line-height: 1.8;
+  white-space: pre-line;
+}
+.public-shell .public-information .historical-event-card .historical-event-poster {
+  width: 100%;
+  gap: 10px;
+  font-size: 11px;
+  line-height: 1.5;
+}
+@media (max-width: 640px) {
+  .public-shell .public-information .historical-event-card-header {
+    padding: 22px;
+  }
+  .public-shell .public-information .historical-event-card > .historical-event-card-body {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+    padding: 22px;
+  }
+  .public-shell .public-information .historical-event-card .historical-event-poster {
+    max-width: 160px;
+  }
+}
 .public-shell .public-information .resource-row {
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
   gap: 16px;

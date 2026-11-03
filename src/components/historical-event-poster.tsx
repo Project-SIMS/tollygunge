@@ -18,6 +18,10 @@ const posters: Record<string, { src: string; alt: string; width: number; height:
   },
 };
 
+export function hasHistoricalEventPoster(date: string) {
+  return Boolean(posters[date]);
+}
+
 export function HistoricalEventPoster({ date }: { date: string }) {
   const poster = posters[date];
   if (!poster) return null;
