@@ -31,14 +31,18 @@ export async function GET(r: Request) {
       (params.get("q") || "").slice(0, 120).replace(/[\\%_]/g, "\\$&") +
       "%";
     const id = params.get("id") || "";
+    const personId = params.get("personId") || "";
+    const userId = params.get("userId") || "";
+    if (personId.length > 200 || userId.length > 200)
+      throw new OperationError("Check the profile filter.");
     const verifiedPage = Math.max(
       1,
       Math.min(10000, Number(params.get("verifiedPage")) || 1),
     );
     const reviews = (
       await db.query(
-        "SELECT s.*,v.fields AS requirement_fields,u.name,u.email,p.accepted_verified,p.verification_update_requested FROM tpa.verification_submissions s JOIN tpa.verification_policies v ON v.version=s.requirement_version JOIN public.\"user\" u ON u.id=s.user_id JOIN tpa.people p ON p.id=s.person_id WHERE ($2='all' OR s.status=$2) AND concat_ws(' ',u.name,u.email) ILIKE $3 AND ($4='' OR s.id::text=$4) ORDER BY (s.status='pending') DESC,s.created_at DESC LIMIT 101 OFFSET $1",
-        [offset, status, q, id],
+        "SELECT s.*,v.fields AS requirement_fields,u.name,u.email,p.accepted_verified,p.verification_update_requested FROM tpa.verification_submissions s JOIN tpa.verification_policies v ON v.version=s.requirement_version JOIN public.\"user\" u ON u.id=s.user_id JOIN tpa.people p ON p.id=s.person_id WHERE p.archived_at IS NULL AND ($2='all' OR s.status=$2) AND concat_ws(' ',u.name,u.email) ILIKE $3 AND ($4='' OR s.id::text=$4) AND ($5='' OR p.id::text=$5) AND ($6='' OR s.user_id=$6) ORDER BY (s.status='pending') DESC,s.created_at DESC LIMIT 101 OFFSET $1",
+        [offset, status, q, id, personId, userId],
       )
     ).rows;
     const verified = (

@@ -1,5 +1,6 @@
 "use client";
 import { MemberEditor, MemberCreator } from "./member-editor";
+import { MemberVerificationReview } from "./member-verification-review";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
@@ -651,6 +652,19 @@ export function MemberRegister({
                   {selected.professional_verified ? "Verified" : "Unverified"}
                 </dd>
               </dl>
+              {canManage && <MemberVerificationReview
+                key={recordKey(selected)}
+                personId={selected.person_id}
+                userId={selected.user_id}
+                name={selected.person.name}
+                verified={selected.professional_verified}
+                disabled={busy || editorDirty}
+                onApproved={async () => {
+                  await load(0);
+                  setSelected(undefined);
+                  setMessage("Profile verification approved.");
+                }}
+              />}
               <div className="action-row">
                 <button
                   className="button secondary"
