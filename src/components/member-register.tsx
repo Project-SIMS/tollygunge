@@ -1,5 +1,6 @@
 "use client";
 import { MemberEditor, MemberCreator } from "./member-editor";
+import { MemberAttendanceHistory } from "./member-attendance-history";
 import { MemberVerificationReview } from "./member-verification-review";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -652,6 +653,7 @@ export function MemberRegister({
                   {selected.professional_verified ? "Verified" : "Unverified"}
                 </dd>
               </dl>
+              {selected.person_id && <MemberAttendanceHistory key={selected.person_id} personId={selected.person_id} />}
               {canManage && <MemberVerificationReview
                 key={recordKey(selected)}
                 personId={selected.person_id}

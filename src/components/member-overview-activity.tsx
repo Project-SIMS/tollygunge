@@ -46,8 +46,8 @@ export function MemberOverviewActivity() {
       {journey ? (
         <dl className="member-activity-counts">
           <div>
-            <dt>Events attended</dt>
-            <dd>{journey.attendanceCount}</dd>
+            <dt>Attendance records</dt>
+            <dd>{journey.attendanceCount + (journey.historicalAttendance?.length ?? 0)}</dd>
           </div>
           <div>
             <dt>Attendance badges</dt>

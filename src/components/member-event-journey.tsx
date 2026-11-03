@@ -46,9 +46,9 @@ export function MemberEventJourney() {
         <div className="event-journey-grid">
           <div className="event-attendance-stat">
             <PortalIcon name="calendar" />
-            <strong>{journey.attendanceCount}</strong>
-            <span>Events attended</span>
-            <p>Platform event attendance.</p>
+            <strong>{journey.attendanceCount + (journey.historicalAttendance?.length ?? 0)}</strong>
+            <span>Attendance records</span>
+            <p>Includes platform events and historical registers.</p>
           </div>
           <section className="event-journey-detail">
             <h3>Events you attended</h3>
