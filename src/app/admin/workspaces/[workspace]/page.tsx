@@ -1,3 +1,4 @@
+import { loadWorkbookAttendance } from "@/lib/workbook-attendance";
 import { StatusBadge } from "@/components/portal-values";
 import { PortalSubsections } from "@/components/portal-subsections";
 import { PaymentsWorkspace } from "@/components/payments-workspace";
@@ -137,6 +138,7 @@ export default async function Workspace({
             <EventParticipants
               key={participantTab}
               tab={participantTab}
+              workbookEvents={await loadWorkbookAttendance()}
               canVerifyPayments={hasPermission(actor.roles, "payments:manage")}
             />
           ) : (

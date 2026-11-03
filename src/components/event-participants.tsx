@@ -7,6 +7,9 @@ import { ProfilePreview, ProfileInspector } from "./profile-preview";
 import { WorkspaceEmptyState } from "./workspace-ui";
 import { eventTime } from "@/domain/event-flow";
 
+import type { WorkbookEvent } from "@/lib/workbook-attendance";
+import { WorkbookEventParticipants } from "./workbook-event-participants";
+
 type EventChoice = {
   id: string;
   title: string;
@@ -63,7 +66,15 @@ async function read<T>(url: string, signal: AbortSignal): Promise<T> {
   if (!response.ok) throw Error(data.error || "Unable to load participants.");
   return data;
 }
-export function EventParticipants({
+export function EventParticipants(props: { tab: "registrations" | "payments" | "attendance"; canVerifyPayments?: boolean; workbookEvents?: WorkbookEvent[] }) {
+  const [source, setSource] = useState(props.workbookEvents?.length ? "workbook" : "live");
+  return <>
+    {!!props.workbookEvents?.length && <label>Participant source<select value={source} onChange={e => setSource(e.target.value)}><option value="workbook">Workbook event attendance</option><option value="live">Platform event registrations</option></select></label>}
+    {source === "workbook" && props.workbookEvents?.length ? <WorkbookEventParticipants events={props.workbookEvents} /> : <LiveEventParticipants {...props} />}
+  </>;
+}
+
+function LiveEventParticipants({
   tab,
   canVerifyPayments = false,
 }: {

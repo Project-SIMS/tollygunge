@@ -1,0 +1,45 @@
+import "server-only";
+import ExcelJS from "exceljs";
+import { access } from "node:fs/promises";
+import path from "node:path";
+
+export type WorkbookAttendee = { number: string; name: string; email: string; mobile: string; designation: string; organisation: string; status: "Attended" | "Not attended" | "Not recorded"; matched: boolean };
+export type WorkbookEvent = { date: string; sheet: string; rows: WorkbookAttendee[] };
+const normalize = (value: string) => value.trim().toLowerCase().replace(/[^a-z0-9]/g, "");
+const memberKey = (value: string) => value.trim().replace(/^0+(?=\d)/, "");
+export async function loadWorkbookAttendance(): Promise<WorkbookEvent[]> {
+  const filename = process.env.TPA_ATTENDANCE_WORKBOOK || path.join(process.cwd(), ".local/event-attendance/source.xlsx");
+  try { await access(filename); } catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") return []; throw error; }
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.readFile(filename);
+  const database = workbook.getWorksheet("Database");
+  if (!database) throw Error("Attendance workbook is missing its Database sheet.");
+  const members = new Map<string, ExcelJS.Row[]>();
+  database.eachRow((row, index) => {
+    if (index === 1) return;
+    const key = memberKey(row.getCell(4).text);
+    if (key) members.set(key, [...(members.get(key) || []), row]);
+  });
+  return workbook.worksheets.flatMap(sheet => {
+    const match = /^(\d{2})-(\d{2})-(\d{2})$/.exec(sheet.name);
+    if (!match) return [];
+    const headers = new Map<string, number>();
+    sheet.getRow(1).eachCell((cell, index) => headers.set(normalize(cell.text), index));
+    const rows: WorkbookAttendee[] = [];
+    sheet.eachRow((row, index) => {
+      if (index === 1) return;
+      const cell = (...names: string[]) => { const col = names.map(normalize).map(n => headers.get(n)).find(Boolean); return col ? row.getCell(col).text.trim() : ""; };
+      const name = cell("Member Name", "Name");
+      if (!name) return;
+      const number = cell("Membership No.");
+      const matches = members.get(memberKey(number)) || [];
+      const member = matches.length === 1 ? matches[0] : undefined;
+      const attendance = normalize(cell("Attendance Status", "Signature"));
+      rows.push({ number, name: member ? [member.getCell(2).text, member.getCell(3).text].filter(Boolean).join(" ") : name,
+        email: member?.getCell(5).text || cell("Email"), mobile: member?.getCell(6).text || cell("Mobile"),
+        designation: member?.getCell(7).text || "", organisation: member?.getCell(8).text || "",
+        status: ["attended", "yes", "present"].includes(attendance) ? "Attended" : ["notattended", "no", "absent"].includes(attendance) ? "Not attended" : "Not recorded", matched: Boolean(member) });
+    });
+    return [{ date: `20${match[3]}-${match[2]}-${match[1]}`, sheet: sheet.name, rows }];
+  }).sort((a, b) => b.date.localeCompare(a.date));
+}

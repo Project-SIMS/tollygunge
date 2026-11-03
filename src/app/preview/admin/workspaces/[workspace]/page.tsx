@@ -52,6 +52,21 @@ const workspaces: Record<string, { title: string; description: string }> = {
 
 export const metadata = { robots: { index: false, follow: false } };
 
+const previewPayments = [
+  { member: "Sample Member A", purpose: "Annual membership", amount: 2500, method: "UPI", status: "Verified" },
+  { member: "Sample Member B", purpose: "Student membership", amount: 1000, method: "Bank transfer", status: "Pending review" },
+  { member: "Sample Member C", purpose: "Tax workshop", amount: 750, method: "UPI", status: "Verified" },
+  { member: "Sample Member D", purpose: "Patron membership", amount: 10000, method: "Bank transfer", status: "Verified" },
+  { member: "Sample Member E", purpose: "Annual membership", amount: 2500, method: "Cheque", status: "Pending review" },
+  { member: "Sample Member F", purpose: "Professional seminar", amount: 500, method: "UPI", status: "Needs clarification" },
+  { member: "Sample Member G", purpose: "Annual membership", amount: 2500, method: "Bank transfer", status: "Verified" },
+  { member: "Sample Member H", purpose: "Student membership", amount: 1000, method: "UPI", status: "Verified" },
+  { member: "Sample Member I", purpose: "Networking dinner", amount: 1500, method: "UPI", status: "Pending review" },
+  { member: "Sample Member J", purpose: "Annual membership", amount: 2500, method: "Cheque", status: "Needs clarification" },
+  { member: "Sample Member K", purpose: "Tax workshop", amount: 750, method: "Bank transfer", status: "Verified" },
+  { member: "Sample Member L", purpose: "Patron membership", amount: 10000, method: "UPI", status: "Pending review" },
+];
+
 export default async function Workspace({
   params,
 }: {
@@ -87,6 +102,38 @@ export default async function Workspace({
           <div className="notice" style={{ marginBottom: 24 }}>
             This workspace view is running in design preview mode with synthetic records. You can explore all navigation tabs and switch workspaces seamlessly.
           </div>
+          {workspace === "payments" && (
+            <section aria-label="Sample payment records">
+              <h3>Payment records · {previewPayments.length} samples</h3>
+              <p>Illustrative payments only. References and verification statuses are fictional.</p>
+              <div className="table-wrap" role="region" aria-label="Preview payments" tabIndex={0} style={{ marginBottom: 24 }}>
+                <table>
+                  <thead>
+                    <tr>
+                      <th scope="col">Member / reference</th>
+                      <th scope="col">Purpose</th>
+                      <th scope="col">Date</th>
+                      <th scope="col">Amount</th>
+                      <th scope="col">Method</th>
+                      <th scope="col">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {previewPayments.map((payment, index) => (
+                      <tr key={payment.member}>
+                        <td><strong>{payment.member}</strong><small>DEMO-PAY-{String(index + 1).padStart(3, "0")}</small></td>
+                        <td>{payment.purpose}</td>
+                        <td>{String(24 - index).padStart(2, "0")} Oct 2026</td>
+                        <td>{new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(payment.amount)}</td>
+                        <td>{payment.method}</td>
+                        <td><span className={`badge${payment.status === "Verified" ? "" : " pending"}`}>{payment.status}</span></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          )}
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
             <Link className="button" href="/preview/admin">
               ← Return to Dashboard
