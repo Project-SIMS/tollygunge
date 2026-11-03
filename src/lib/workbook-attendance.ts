@@ -1,14 +1,18 @@
 import "server-only";
+import { applyHistoricalEventDetails } from "./historical-event-details";
 import ExcelJS from "exceljs";
 import { access } from "node:fs/promises";
 import path from "node:path";
 import { gunzipSync } from "node:zlib";
 
 export type WorkbookAttendee = { number: string; name: string; email: string; mobile: string; designation: string; organisation: string; status: "Attended" | "Not attended" | "Not recorded"; matched: boolean };
-export type WorkbookEvent = { date: string; sheet: string; rows: WorkbookAttendee[] };
+export type WorkbookEvent = { date: string; sheet: string; rows: WorkbookAttendee[]; title?: string; description?: string; location?: string; speakers?: string; version?: number };
 const normalize = (value: string) => value.trim().toLowerCase().replace(/[^a-z0-9]/g, "");
 const memberKey = (value: string) => value.trim().replace(/^0+(?=\d)/, "");
 export async function loadWorkbookAttendance(): Promise<WorkbookEvent[]> {
+  return applyHistoricalEventDetails(await readWorkbookAttendance());
+}
+async function readWorkbookAttendance(): Promise<WorkbookEvent[]> {
   // Private runtime configuration: never use a NEXT_PUBLIC variable for member data.
   const snapshot = process.env.TPA_ATTENDANCE_SNAPSHOT_GZIP_BASE64;
   if (snapshot) {

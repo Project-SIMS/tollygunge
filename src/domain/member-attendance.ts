@@ -1,4 +1,4 @@
-export type AttendanceSheet = { date: string; rows: { number: string; mobile?: string; status: string }[] };
+export type AttendanceSheet = { date: string; title?: string; rows: { number: string; mobile?: string; status: string }[] };
 export type HistoricalAttendance = { date: string; title: string; source: "workbook" };
 export function attendanceMembershipKey(number: string) {
   return number.trim().toLowerCase().replace(/^0+(?=\d)/, "");
@@ -27,7 +27,7 @@ export function ownWorkbookAttendance(events: AttendanceSheet[], numbers: string
     }
     return keys.has(attendanceMembershipKey(row.number));
   }))
-    .map(event => ({date: event.date, title: "Association event", source: "workbook" as const}))
+    .map(event => ({date: event.date, title: event.title || "Association event", source: "workbook" as const}))
     .filter((event, index, all) => all.findIndex(other => other.date === event.date) === index)
     .sort((a, b) => b.date.localeCompare(a.date));
 }
