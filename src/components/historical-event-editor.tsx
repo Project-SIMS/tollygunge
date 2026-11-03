@@ -32,7 +32,7 @@ export function HistoricalEventEditor({ date, details }: { date: string; details
         <label>Venue<input maxLength={240} value={draft.location} onChange={event => setDraft({ ...draft, location: event.target.value })} /></label>
         <label>Speakers<input maxLength={500} value={draft.speakers} onChange={event => setDraft({ ...draft, speakers: event.target.value })} /></label>
         <label>Reason for editing<input required minLength={3} maxLength={1000} value={reason} onChange={event => setReason(event.target.value)} /></label>
-        <p>The register date and attendance records remain attached to this event.</p>
+        <p>Saved details appear on the public event pages. The register date and attendance records remain attached to this event.</p>
         <div className="action-row"><button className="button" disabled={busy}>{busy ? "Saving…" : "Save event details"}</button><button type="button" className="button secondary" onClick={() => { setEditing(false); setReason(""); setMessage(""); }}>Cancel</button></div>
       </fieldset>
     </form>

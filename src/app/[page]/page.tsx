@@ -1,3 +1,4 @@
+import { publicHistoricalEvents } from "@/lib/public-historical-events";
 import { peopleFallback } from "@/domain/people-placement";
 import { publishedPeople } from "@/lib/public-people";
 import { PublicContentView } from "@/components/public-content-view";
@@ -58,17 +59,18 @@ export default async function ContentPage({
     page === "events" && process.env.DATABASE_URL
       ? (
           await getDatabase().query(
-            "SELECT id,title,location,starts_at,ends_at FROM tpa.events WHERE status='published' ORDER BY starts_at DESC LIMIT 100",
+            "SELECT id,title,location,starts_at,ends_at FROM tpa.events WHERE status='published' AND visibility='public' ORDER BY starts_at DESC LIMIT 100",
           )
         ).rows
       : [];
+  const pastEvents = page === "events" ? await publicHistoricalEvents() : [];
   if (!live && page === "events") {
     data.sections[0].text = events.some(
       (event) => new Date(event.ends_at) > new Date(),
     )
       ? "Choose a published event to view its details and registration."
       : "No upcoming events are published yet.";
-    if (events.some((event) => new Date(event.ends_at) <= new Date()))
+    if (pastEvents.length || events.some((event) => new Date(event.ends_at) <= new Date()))
       data.sections[1].text =
         "Explore completed events. Your own attendance history remains private in your member space.";
   }
@@ -83,7 +85,7 @@ export default async function ContentPage({
       <PublicContentView
         page={page}
         data={data}
-        context={{ people, media, events, articles,biographyTemplate:(await publishedSettings('shared')).biographyHeading,importantLinks:page==='resources'?await publishedResources('link'):[],downloads:page==='resources'?await publishedResources('document'):[] }}
+        context={{ people, media, events, pastEvents, articles,biographyTemplate:(await publishedSettings('shared')).biographyHeading,importantLinks:page==='resources'?await publishedResources('link'):[],downloads:page==='resources'?await publishedResources('document'):[] }}
       />
     </SiteShell>
   );

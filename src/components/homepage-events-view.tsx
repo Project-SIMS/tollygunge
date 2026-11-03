@@ -1,7 +1,8 @@
+import type { PublicHistoricalEvent } from "@/lib/public-historical-events";
 import Link from "next/link";
 import { NewsletterSignup } from "./newsletter-signup";
 export type HomeEvent = { id: string; title: string; starts_at: Date | string; location: string };
-export function HomepageEventsView({ events, readOnly = false, heading = "Make room for what comes next." }: { events: HomeEvent[]; readOnly?: boolean; heading?: string }) {
+export function HomepageEventsView({ events, pastEvents = [], readOnly = false, heading = "Make room for what comes next." }: { events: HomeEvent[]; pastEvents?: PublicHistoricalEvent[]; readOnly?: boolean; heading?: string }) {
   const date = new Intl.DateTimeFormat("en-IN", { day: "2-digit", month: "short", timeZone: "Asia/Kolkata" });
   const time = new Intl.DateTimeFormat("en-IN", { hour: "numeric", minute: "2-digit", timeZone: "Asia/Kolkata" });
   return <section className="v3-events" aria-labelledby="home-events-title">
@@ -11,7 +12,15 @@ export function HomepageEventsView({ events, readOnly = false, heading = "Make r
         <time dateTime={new Date(event.starts_at).toISOString()}>{date.format(new Date(event.starts_at))}</time>
         <div><h3><Link href={`/events/${event.id}`}>{event.title}</Link></h3><p>{time.format(new Date(event.starts_at))} IST{event.location ? ` · ${event.location}` : ""}</p></div>
         <Link className="button secondary" href={`/events/${event.id}`} aria-label={`View ${event.title}`}>View event <span aria-hidden="true">↗</span></Link>
-      </li>)}</ul> : <div className="v3-events-empty"><p>New events will appear here when they are published.</p><Link className="button gold" href="/events">Explore the event calendar <span aria-hidden="true">→</span></Link></div>}
+      </li>)}</ul> : <div className="v3-events-empty"><p>{pastEvents.length ? "No upcoming events are published yet." : "New events will appear here when they are published."}</p><Link className="button gold" href="/events">Explore the event calendar <span aria-hidden="true">→</span></Link></div>}
+      {pastEvents.length > 0 && <section aria-labelledby="home-past-events-title">
+        <div className="section-heading"><div><span className="eyebrow">PAST EVENTS</span><h3 id="home-past-events-title">Recent & past events</h3></div></div>
+        <ul className="v3-event-list">{pastEvents.slice(0, 5).map(event => <li key={event.date}>
+          <time dateTime={event.date}>{date.format(new Date(`${event.date}T12:00:00+05:30`))}</time>
+          <div><h3><Link href={`/events#event-${event.date}`}>{event.title}</Link></h3><p>{new Intl.DateTimeFormat("en-IN", {year:"numeric",timeZone:"Asia/Kolkata"}).format(new Date(`${event.date}T12:00:00+05:30`))}{event.location ? ` · ${event.location}` : ""}</p></div>
+          <Link className="button secondary" href={`/events#event-${event.date}`} aria-label={`View ${event.title}`}>View event <span aria-hidden="true">↗</span></Link>
+        </li>)}</ul>
+      </section>}
       <NewsletterSignup readOnly={readOnly} />
     </div>
   </section>;

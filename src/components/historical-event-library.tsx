@@ -11,7 +11,7 @@ export async function HistoricalEventLibrary() {
       <div className="section-heading">
         <div>
           <h2 id="historical-events-title">Historical event registers</h2>
-          <p>{events.length} event dates from the uploaded attendance workbook. Open a date to view its members.</p>
+          <p>{events.length} event dates in the historical register. Open a date to view its members.</p>
         </div>
       </div>
       <div className="table-wrap" role="region" aria-label="Historical event dates" tabIndex={0}>
@@ -21,7 +21,7 @@ export async function HistoricalEventLibrary() {
             {events.map(event => (
               <tr key={event.date}>
                 <th scope="row"><strong>{event.title || "Association event"}</strong><small>{new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Kolkata" }).format(new Date(`${event.date}T12:00:00+05:30`))}</small>{event.description && <p>{event.description}</p>}{event.location && <small>Venue: {event.location}</small>}{event.speakers && <small>Speakers: {event.speakers}</small>}</th>
-                <td>{event.rows.length}</td>
+                <td>{event.rows.length || "Attendees to be added"}</td>
                 <td>{event.rows.filter(row => row.status === "Attended").length}</td>
                 <td>{event.rows.filter(row => row.status === "Not attended").length}</td>
                 <td>{event.rows.filter(row => row.status === "Not recorded").length}</td>
