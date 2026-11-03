@@ -2,12 +2,26 @@ import "server-only";
 import ExcelJS from "exceljs";
 import { access } from "node:fs/promises";
 import path from "node:path";
+import { gunzipSync } from "node:zlib";
 
 export type WorkbookAttendee = { number: string; name: string; email: string; mobile: string; designation: string; organisation: string; status: "Attended" | "Not attended" | "Not recorded"; matched: boolean };
 export type WorkbookEvent = { date: string; sheet: string; rows: WorkbookAttendee[] };
 const normalize = (value: string) => value.trim().toLowerCase().replace(/[^a-z0-9]/g, "");
 const memberKey = (value: string) => value.trim().replace(/^0+(?=\d)/, "");
 export async function loadWorkbookAttendance(): Promise<WorkbookEvent[]> {
+  // Private runtime configuration: never use a NEXT_PUBLIC variable for member data.
+  const snapshot = process.env.TPA_ATTENDANCE_SNAPSHOT_GZIP_BASE64;
+  if (snapshot) {
+    const events: unknown = JSON.parse(gunzipSync(Buffer.from(snapshot, "base64"), { maxOutputLength: 2_000_000 }).toString("utf8"));
+    if (!Array.isArray(events) || !events.every(event =>
+      event && typeof event.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(event.date) &&
+      typeof event.sheet === "string" && Array.isArray(event.rows) && event.rows.every((row: WorkbookAttendee) =>
+        row && [row.number, row.name, row.email, row.mobile, row.designation, row.organisation].every(value => typeof value === "string") &&
+        typeof row.matched === "boolean" && ["Attended", "Not attended", "Not recorded"].includes(row.status)
+      )
+    )) throw Error("The private attendance snapshot is invalid.");
+    return events as WorkbookEvent[];
+  }
   const filename = process.env.TPA_ATTENDANCE_WORKBOOK || path.join(process.cwd(), ".local/event-attendance/source.xlsx");
   try { await access(filename); } catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") return []; throw error; }
   const workbook = new ExcelJS.Workbook();
