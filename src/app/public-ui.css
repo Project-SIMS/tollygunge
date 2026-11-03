@@ -630,15 +630,21 @@
   list-style: none;
 }
 .public-shell .public-information .historical-event-overview {
-  margin-top: 24px;
+  grid-column: 1 / -1;
+  min-width: 0;
+  margin-top: 0;
   padding-top: 20px;
   border-top: 1px solid var(--line);
 }
 .public-shell .public-information .historical-event-card .historical-event-overview p {
-  max-width: 65ch;
-  font-size: 13px;
+  max-width: 70ch;
+  color: var(--ink);
+  font-size: 15px;
   line-height: 1.8;
   white-space: pre-line;
+}
+.public-shell .public-information .historical-event-card .historical-event-overview p + p {
+  margin-top: 14px;
 }
 .public-shell .public-information .historical-event-card .historical-event-poster {
   width: 100%;
