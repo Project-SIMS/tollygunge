@@ -942,3 +942,15 @@
   background: var(--portal-hover);
   color: var(--ink);
 }
+
+.portal.portal :global(.application-step-content) { min-width:0; }
+@media (min-width: 760px) {
+  .portal.portal :global(.application-step-layout) { display:grid; grid-template-columns:clamp(180px, 20vw, 240px) minmax(0, 1fr); gap:24px; align-items:start; margin-top:20px; }
+  .portal.portal :global(.application-step-layout .member-stepper) { display:flex; flex-direction:column; gap:8px; margin:0; position:sticky; top:80px; }
+  .portal.portal.portal :global(.application-step-layout .member-stepper .button) { justify-content:flex-start; width:100%; min-height:64px; padding:12px; font-size:12px; line-height:1.5; }
+  .portal.portal :global(.application-step-layout .member-stepper .button > span:last-child) { display:block; }
+  .portal.portal :global(.application-step-content .member-form-card) { margin:0; }
+}
+@media (min-width:760px) and (max-width:1050px) {
+  .portal.portal :global(.application-step-content .form-grid) { grid-template-columns:minmax(0,1fr); }
+}

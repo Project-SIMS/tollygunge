@@ -3,7 +3,7 @@ import { createAuthClient } from "better-auth/react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { NewPasswordField } from "./new-password-field";
+import { NewPasswordField, PasswordInput } from "./new-password-field";
 import { eventReturnPath } from "@/domain/event-flow";
 import { passwordPolicy, passwordError, existingPasswordMaximum } from "@/domain/password-policy";
 import { FallbackPanel } from "./fallback-screen";
@@ -228,8 +228,8 @@ export function PasswordUpdate({
       {signedIn && (
         <label>
           Current password
-          <input
-            type="password"
+          <PasswordInput
+            aria-label="Current password"
             name="current"
             autoComplete="current-password"
             required
@@ -240,8 +240,8 @@ export function PasswordUpdate({
       <NewPasswordField onChange={setPasswordValue} />
       <label>
         Confirm new password
-        <input
-          type="password"
+        <PasswordInput
+          aria-label="Confirm new password"
           name="confirm"
           onChange={(e) => setConfirmation(e.target.value)}
           aria-describedby="password-match"

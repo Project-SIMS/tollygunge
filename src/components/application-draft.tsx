@@ -600,6 +600,7 @@ export function ApplicationDraft({
           </button>
         </div>
       )}
+      <div className="application-step-layout">
       <nav className="member-stepper" aria-label="Application steps">
         {verificationSteps.map((s, i) => (
           <button
@@ -620,6 +621,7 @@ export function ApplicationDraft({
           </button>
         ))}
       </nav>
+      <div className="application-step-content">
       {converted && (
         <p className="notice" role="status">
           Your previous Student draft is now a professional application. Saved
@@ -831,6 +833,8 @@ export function ApplicationDraft({
           )}
         </div>
       </form>
+      </div>
+      </div>
       {Object.keys(fieldErrors).length > 0 && (
         <div className="member-validation-summary" role="alert">
           <strong>Check these details</strong>

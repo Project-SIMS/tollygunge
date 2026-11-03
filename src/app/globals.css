@@ -2767,3 +2767,9 @@ html[data-color-mode="dark"] .button:not(.secondary):not(.gold):not(.danger):hov
 .public-breadcrumbs li {display:inline-flex;align-items:center;gap:8px;max-width:100%;overflow-wrap:anywhere;}
 .public-breadcrumbs li+li::before {content:"/";color:var(--muted);}
 .public-breadcrumbs a {display:inline-flex;align-items:center;min-height:44px;text-decoration:underline;text-underline-offset:3px;}
+
+/* Password visibility controls also work inside signed-in account forms. */
+.member-settings .auth-password-wrapper { position:relative; display:flex; align-items:center; width:100%; }
+.member-settings .auth-password-wrapper input { width:100%; padding-right:48px; }
+.member-settings .auth-password-toggle { position:absolute; right:8px; top:50%; transform:translateY(-50%); display:inline-flex; align-items:center; justify-content:center; width:36px; height:36px; padding:0; background:transparent; border:0; border-radius:4px; color:var(--ink); cursor:pointer; }
+.member-settings .auth-password-toggle:focus-visible { outline:2px solid var(--link); outline-offset:2px; }
