@@ -13,3 +13,29 @@ school directory lists Mayur Vihar, Delhi 110091 within East district:
 https://dmeast.delhi.gov.in/education/ . This mapping uses the installed postal
 hierarchy's state `Delhi` and district `East`; it does not map other districts
 or infer cities from district names.
+
+## Member-address corrections reviewed 2026-11-02
+
+These aliases preserve supplied city names while validating against the installed
+postal hierarchy. District spellings below match the postal reference exactly.
+
+- Durgapur and Asansol, Paschim Bardhaman, West Bengal: district administrative
+  setup https://paschimbardhaman.gov.in/administrative-setup/ and district survey
+  https://www.wbindustries.gov.in/files/Mines/DSR/Paschim_Bardhaman_Modified_DSR_Final_Mar24.pdf
+- Bhubaneswar, Khordha, Odisha: district city description
+  https://khordha.odisha.gov.in/en/tourism/tourist-places/bhubaneswar
+- Thiruvananthapuram, Kerala: https://trivandrum.nic.in/en/ and the Vattiyoorkavu
+  village office (PIN 695013, Trivandrum Corporation)
+  https://landrevenue.kerala.gov.in/core/Office_websites/contactus.php?nm=260Vattiyoorkavuvillageoffice
+  The source spelling `Thiruvannathapuram` is an input alias normalized to
+  `Thiruvananthapuram`; original imported source cells remain in the saved batch.
+- New Town postal addresses using Kolkata, postal district `24 Paraganas North`:
+  https://smartcity.nkdamar.org/nkda-profile identifies New Town, Kolkata 700156.
+  This is a postal city alias, not a claim about municipal jurisdiction.
+- Jajpur Road, postal district `Jajapur`, Odisha: Government of Odisha notice
+  https://labour.odisha.gov.in/sites/default/files/2022-08/16073_21.07.2022.pdf
+  documents Jajpur Road, Vyasanagar Tahasil, Jajpur 755019. PIN 755019 also serves
+  Kendujhar locations, so district selection must use the supplied locality.
+
+No address lines, identity details, membership status, account verification or
+payment records are changed by these city-reference additions.
