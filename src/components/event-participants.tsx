@@ -70,7 +70,7 @@ export function EventParticipants(props: { tab: "registrations" | "payments" | "
   const requestedDate = useSearchParams().get("eventDate") ?? undefined;
   const [source, setSource] = useState(props.workbookEvents?.length ? "workbook" : "live");
   return <>
-    {!!props.workbookEvents?.length && <label>Participant source<select value={source} onChange={e => setSource(e.target.value)}><option value="workbook">Workbook event attendance</option><option value="live">Platform event registrations</option></select></label>}
+    {!!props.workbookEvents?.length && <label className="participant-source">Participant source<select value={source} onChange={e => setSource(e.target.value)}><option value="workbook">Workbook event attendance</option><option value="live">Platform event registrations</option></select></label>}
     {source === "workbook" && props.workbookEvents?.length ? <WorkbookEventParticipants key={requestedDate} events={props.workbookEvents} initialDate={requestedDate} /> : <LiveEventParticipants {...props} />}
   </>;
 }

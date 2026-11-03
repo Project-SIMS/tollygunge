@@ -845,3 +845,89 @@
     line-height: 12px;
   }
 }
+
+/* Workbook attendance: fixed columns keep wrapped notes out of adjacent cells. */
+.horizontal.horizontal :global(.participant-source) {
+  display: grid;
+  gap: 6px;
+  width: min(100%, 360px);
+  margin-bottom: 16px;
+  font-size: 12px;
+}
+.horizontal.horizontal :global(.participant-source select) {
+  width: 100%;
+  min-width: 0;
+}
+.horizontal.horizontal :global(.workbook-attendance-filters) {
+  grid-template-columns: minmax(0, 1.25fr) minmax(150px, .7fr) minmax(200px, 1fr);
+  gap: 14px;
+  margin: 16px 0 20px;
+}
+.horizontal.horizontal :global(.workbook-attendance-filters label) {
+  display: grid;
+  gap: 6px;
+}
+.horizontal.horizontal :global(.workbook-attendance-filters :is(input, select)) {
+  height: 42px;
+  margin: 0;
+  text-overflow: ellipsis;
+}
+.horizontal.horizontal :global(.workbook-attendance-table) {
+  margin-top: 14px;
+  overflow-x: auto;
+}
+.horizontal.horizontal :global(.workbook-attendance-table table) {
+  table-layout: fixed;
+  min-width: 960px;
+  width: 100%;
+}
+.horizontal.horizontal :global(.attendance-member-column) { width: 26%; }
+.horizontal.horizontal :global(.attendance-number-column) { width: 13%; }
+.horizontal.horizontal :global(.attendance-contact-column) { width: 26%; }
+.horizontal.horizontal :global(.attendance-organisation-column) { width: 23%; }
+.horizontal.horizontal :global(.attendance-status-column) { width: 12%; }
+.horizontal.horizontal :global(.workbook-attendance-table :is(th, td)) {
+  text-align: left;
+  vertical-align: top;
+  padding: 14px 16px;
+  overflow-wrap: anywhere;
+}
+.horizontal.horizontal :global(.workbook-attendance-table th) {
+  white-space: nowrap;
+  font-size: 10px;
+  letter-spacing: .06em;
+}
+.horizontal.horizontal :global(.attendance-primary) {
+  display: block;
+  line-height: 1.6;
+}
+.horizontal.horizontal :global(.workbook-attendance-table .attendance-secondary) {
+  display: block;
+  margin-top: 6px;
+  font-size: 11px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.horizontal.horizontal :global(.attendance-number) {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  line-height: 1.6;
+}
+.horizontal.horizontal :global(.attendance-status) {
+  display: block;
+  white-space: nowrap;
+  line-height: 1.6;
+}
+@media (max-width: 800px) {
+  .horizontal.horizontal :global(.workbook-attendance-filters) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .horizontal.horizontal :global(.workbook-attendance-filters label:first-child) {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 480px) {
+  .horizontal.horizontal :global(.workbook-attendance-filters) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
