@@ -1,3 +1,4 @@
+import { HistoricalEventLibrary } from "@/components/historical-event-library";
 import { loadWorkbookAttendance } from "@/lib/workbook-attendance";
 import { StatusBadge } from "@/components/portal-values";
 import { PortalSubsections } from "@/components/portal-subsections";
@@ -142,10 +143,13 @@ export default async function Workspace({
               canVerifyPayments={hasPermission(actor.roles, "payments:manage")}
             />
           ) : (
-            <EventManager
-              canPromote={hasPermission(actor.roles, "communications:manage")}
-              canVerifyPayments={hasPermission(actor.roles, "payments:manage")}
-            />
+            <>
+              <HistoricalEventLibrary />
+              <EventManager
+                canPromote={hasPermission(actor.roles, "communications:manage")}
+                canVerifyPayments={hasPermission(actor.roles, "payments:manage")}
+              />
+            </>
           )
         ) : workspace === "crm" ? (
           <CrmWorkspace />

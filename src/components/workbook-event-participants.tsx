@@ -2,10 +2,11 @@
 import { useState } from "react";
 import type { WorkbookEvent } from "@/lib/workbook-attendance";
 
-export function WorkbookEventParticipants({ events }: { events: WorkbookEvent[] }) {
-  const [date, setDate] = useState(events.find(e => e.rows.some(r => r.status === "Attended"))?.date || events[0]?.date || "");
+export function WorkbookEventParticipants({ events, initialDate }: { events: WorkbookEvent[]; initialDate?: string }) {
+  const initialEvent = events.find(event => event.date === initialDate) ?? events.find(event => event.rows.some(row => row.status === "Attended")) ?? events[0];
+  const [date, setDate] = useState(initialEvent?.date || "");
   const [query, setQuery] = useState("");
-  const [status, setStatus] = useState("Attended");
+  const [status, setStatus] = useState(initialEvent?.rows.some(row => row.status === "Attended") ? "Attended" : "all");
   const event = events.find(e => e.date === date);
   const rows = event?.rows.filter(r => (status === "all" || r.status === status) && [r.name, r.number, r.email, r.mobile, r.organisation].join(" ").toLowerCase().includes(query.toLowerCase())) || [];
   return <section className="participant-directory" data-portal-primary>
