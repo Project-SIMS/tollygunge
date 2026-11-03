@@ -778,6 +778,38 @@ export function MemberRegister({
                   </p>
                 ))}
               </details>
+              {canManage && selected.person_id && selected.record_kind !== "account" && (
+                <button
+                  type="button"
+                  className="button danger"
+                  disabled={busy || editorDirty}
+                  onClick={async () => {
+                    if (!window.confirm(
+                      `Delete ${selected.person.name} from the member directory? Their profile will be archived and removed from public view. Their login account, payment records and history will be retained. You can restore the profile from Publishing → Committees & people → Archived.`,
+                    )) return;
+                    setBusy(true);
+                    try {
+                      await api("/api/staff/member-actions", {
+                        action: "delete",
+                        personId: selected.person_id,
+                        personVersion: selected.person_version,
+                        version: selected.membership_version,
+                      });
+                      setChosen((previous) => previous.filter((id) => id !== selected.person_id));
+                      setSelected(undefined);
+                      await load(0);
+                      setMessage("Member deleted from the directory. Their archived profile can be restored from Publishing → Committees & people.");
+                      createButton.current?.focus();
+                    } catch (error) {
+                      setMessage(error instanceof Error ? error.message : "Unable to delete member. Try again.");
+                    } finally {
+                      setBusy(false);
+                    }
+                  }}
+                >
+                  Delete member
+                </button>
+              )}
               {selected.person_id && (
                 <Link
                   className="button secondary"

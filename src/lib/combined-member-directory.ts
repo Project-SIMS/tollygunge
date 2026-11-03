@@ -28,11 +28,12 @@ export async function combinedMemberDirectory(
  p.contact_email AS email,p.mobile_normalized AS mobile,p.accepted_verified AS professional_verified,u."emailVerified" AS email_verified,
  coalesce(p.status,'unverified') AS profile_review,m.id AS membership_id,m.version AS membership_version,m.membership_number,m.type,m.status,'member'::text AS record_kind
  FROM tpa.people p JOIN tpa.memberships m ON m.person_id=p.id LEFT JOIN public."user" u ON u.id=p.user_id
+ WHERE p.archived_at IS NULL
  UNION ALL
  SELECT p.id,u.id,coalesce(p.version,0),coalesce(p.accepted,'{}'::jsonb)||jsonb_build_object('name',coalesce(p.accepted->>'name',u.name),'organization',coalesce(p.accepted->>'organization',mp.organization,''),'jobTitle',coalesce(p.accepted->>'jobTitle',mp.job_title,'')),
  u.email,coalesce(nullif(p.mobile_normalized,''),mp.phone,''),coalesce(p.accepted_verified,false),u."emailVerified",coalesce(p.status,'unverified'),NULL::uuid,0,NULL::text,NULL::text,NULL::text,'account'::text
  FROM public."user" u LEFT JOIN tpa.people p ON p.user_id=u.id LEFT JOIN tpa.member_profiles mp ON mp.user_id=u.id
- WHERE NOT EXISTS(SELECT 1 FROM tpa.people member_person JOIN tpa.memberships membership ON membership.person_id=member_person.id WHERE member_person.user_id=u.id)
+ WHERE p.archived_at IS NULL AND NOT EXISTS(SELECT 1 FROM tpa.people member_person JOIN tpa.memberships membership ON membership.person_id=member_person.id WHERE member_person.user_id=u.id)
  ), filtered AS (SELECT r.* FROM records r WHERE
  concat_ws(' ',r.person->>'name',r.person->>'organization',r.person->>'jobTitle',r.email,r.mobile,r.membership_number) ILIKE $1
  AND ($2='all' OR r.status=$2 OR ($2='unknown' AND r.record_kind='member' AND r.status IS NULL))

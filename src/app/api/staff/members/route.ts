@@ -52,7 +52,7 @@ export async function GET(request: Request) {
         values = [id, `%${q.replace(/[\\%_]/g, "\\$&")}%`];
       return transaction(async (c) => {
         const from =
-          "FROM tpa.people p JOIN tpa.memberships m ON m.person_id=p.id LEFT JOIN public.\"user\" u ON u.id=p.user_id WHERE $3::int>=0 AND ($4='all' OR m.status=$4 OR ($4='unknown' AND m.status IS NULL)) AND ($1::text IS NULL OR p.id::text=$1) AND concat_ws(' ',p.accepted->>'name',p.contact_email,p.mobile_normalized,m.membership_number) ILIKE $2" +
+          "FROM tpa.people p JOIN tpa.memberships m ON m.person_id=p.id LEFT JOIN public.\"user\" u ON u.id=p.user_id WHERE p.archived_at IS NULL AND $3::int>=0 AND ($4='all' OR m.status=$4 OR ($4='unknown' AND m.status IS NULL)) AND ($1::text IS NULL OR p.id::text=$1) AND concat_ws(' ',p.accepted->>'name',p.contact_email,p.mobile_normalized,m.membership_number) ILIKE $2" +
           (invitation === "held"
             ? " AND EXISTS(SELECT 1 FROM tpa.account_invitation_holds h WHERE h.user_id=p.user_id AND h.released_at IS NULL)"
             : "");

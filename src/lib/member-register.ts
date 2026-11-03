@@ -255,6 +255,8 @@ export async function saveMember(
       409,
       "stale_member",
     );
+  if (row?.archived_at)
+    throw new OperationError("Restore this deleted member profile before editing or importing it.", 409);
   if (row) {
     // Avoid overwriting a pending profile workflow while importing the register.
     if (
