@@ -67,11 +67,29 @@ async function read<T>(url: string, signal: AbortSignal): Promise<T> {
   return data;
 }
 export function EventParticipants(props: { tab: "registrations" | "payments" | "attendance"; canVerifyPayments?: boolean; workbookEvents?: WorkbookEvent[] }) {
-  const requestedDate = useSearchParams().get("eventDate") ?? undefined;
-  const [source, setSource] = useState(props.workbookEvents?.length ? "workbook" : "live");
+  const params = useSearchParams();
+  const router = useRouter();
+  const requestedDate = params.get("eventDate") ?? undefined;
+  const historical = !!props.workbookEvents?.length && params.get("source") !== "live" && !params.get("eventId");
+  function chooseSource(source: string) {
+    const next = new URLSearchParams(params.toString());
+    next.set("view", "participants");
+    next.set("source", source);
+    next.delete("eventId");
+    next.delete("eventDate");
+    next.set("tab", source === "workbook" ? "attendance" : "registrations");
+    router.push("/admin/workspaces/events?" + next);
+  }
   return <>
-    {!!props.workbookEvents?.length && <label className="participant-source">Participant source<select value={source} onChange={e => setSource(e.target.value)}><option value="workbook">Workbook event attendance</option><option value="live">Platform event registrations</option></select></label>}
-    {source === "workbook" && props.workbookEvents?.length ? <WorkbookEventParticipants key={requestedDate} events={props.workbookEvents} initialDate={requestedDate} /> : <LiveEventParticipants {...props} />}
+    {!!props.workbookEvents?.length && <nav className="participant-source-choice" aria-label="Participant records">
+      <button type="button" aria-pressed={historical} onClick={() => chooseSource("workbook")}>
+        <strong>Past attendance registers</strong><span>Browse the imported member lists by event date.</span>
+      </button>
+      <button type="button" aria-pressed={!historical} onClick={() => chooseSource("live")}>
+        <strong>Online registrations</strong><span>Review website bookings, payments and check-ins.</span>
+      </button>
+    </nav>}
+    {historical && props.workbookEvents?.length ? <WorkbookEventParticipants key={requestedDate} events={props.workbookEvents} initialDate={requestedDate} /> : <LiveEventParticipants {...props} />}
   </>;
 }
 

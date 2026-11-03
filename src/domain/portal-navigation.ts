@@ -25,6 +25,7 @@ const admin: PortalGroup[] = [
     label: "Events",
     items: [
       workspace("Events", "events"),
+      { label: "Participants & attendance", href: "/admin/workspaces/events?view=participants" },
       workspace("Flyers", "flyers"),
       workspace("Historical imports", "imports"),
     ],

@@ -1,5 +1,4 @@
 import { PortalSubsections } from "@/components/portal-subsections";
-import { CopyValue } from "@/components/portal-values";
 import { redirect } from "next/navigation";
 
 import { currentActor } from "@/lib/actor";
@@ -26,15 +25,7 @@ export default async function Page() {
   return (
     <AccountShell>
       <main id="main" className="member-content member-profile-page">
-        <div className="member-page-heading">
-          <div>
-            <h1 className="sr-only">Your professional profile</h1>
-          </div>
-          <div className="member-account-identity">
-            <span>Account email · private</span>
-            <CopyValue value={actor.email} />
-          </div>
-        </div>
+        <h1 className="sr-only">Your professional profile</h1>
         <PortalSubsections />
 
         <MemberProfile

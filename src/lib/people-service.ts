@@ -282,13 +282,13 @@ export async function changePerson(
       ownerOnly &&
       process.env.ONBOARDING_ENABLED === "true" &&
       row &&
-      ["name", "organization", "phone"].some(
+      ["organization", "phone"].some(
         (key) =>
           Object.hasOwn(submitted, key) && submitted[key] !== row.draft[key],
       )
     )
       throw new OperationError(
-        "Update name, organization and phone in your verification form.",
+        "Update organization and phone in your verification form.",
         409,
       );
     draft = personBody({

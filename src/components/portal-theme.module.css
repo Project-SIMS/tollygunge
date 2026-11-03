@@ -922,3 +922,23 @@
 @media (max-width: 800px) {
   .portal.portal :global(.portal-topbar .search-entry) { flex: 0 0 40px; min-width: 40px; }
 }
+
+/* Keep application steps readable independently of generic button styling. */
+.portal.portal.portal :global(.member-stepper .button) {
+  background: var(--surface);
+  color: var(--ink);
+  border-color: var(--line);
+}
+.portal.portal.portal :global(.member-stepper .button[aria-current="step"]) {
+  background: #ffe066;
+  color: #1a2238;
+  border-color: #ffe066;
+}
+.portal.portal.portal :global(.member-stepper .button[aria-current="step"] .member-step-number) {
+  background: #1a2238;
+  color: #ffe066;
+}
+.portal.portal.portal :global(.member-stepper .button:hover:not(:disabled):not([aria-current="step"])) {
+  background: var(--portal-hover);
+  color: var(--ink);
+}

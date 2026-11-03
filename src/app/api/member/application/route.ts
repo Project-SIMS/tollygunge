@@ -68,6 +68,9 @@ export async function POST(r: Request) {
           "Your draft changed in another tab. Reload before saving.",
           409,
         );
+      const savedPlan = existing?.plan ?? "Annual";
+      if (i.plan !== savedPlan)
+        throw new OperationError("Only an administrator can assign your membership plan.", 400, "plan_read_only");
       const p = await policy(c);
       const legacy = process.env.ONBOARDING_ENABLED !== "true";
       const details = normalizeAddresses(legacy
@@ -104,7 +107,7 @@ export async function POST(r: Request) {
           [
             existing?.id ?? randomUUID(),
             a.id,
-            i.plan,
+            savedPlan,
             i.category,
             details,
             i.step ?? 0,

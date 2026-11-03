@@ -345,7 +345,7 @@ export function PersonEditor({
             <fieldset className="plain-fieldset" disabled={busy}>
               {owner && onboardingDetails && (
                 <p>
-                  Name, organization and phone are managed in your{" "}
+                  Organization and phone are managed in your{" "}
                   <Link href="/member/application">verification form</Link>.
                 </p>
               )}
@@ -414,7 +414,7 @@ export function PersonEditor({
                           readOnly={
                             owner &&
                             onboardingDetails &&
-                            ["name", "organization", "phone"].includes(key)
+                            ["organization", "phone"].includes(key)
                           }
                           required={key === "name"}
                           maxLength={limit}
@@ -422,7 +422,7 @@ export function PersonEditor({
                         />
                         {owner &&
                         onboardingDetails &&
-                        ["name", "organization", "phone"].includes(key) ? (
+                        ["organization", "phone"].includes(key) ? (
                           <small>
                             Managed in your{" "}
                             <Link href="/member/application">

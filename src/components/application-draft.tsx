@@ -16,7 +16,6 @@ import {
   formatAddress,
   type StructuredAddress,
 } from "@/domain/address";
-import { VerifyEmail } from "./onboarding-auth";
 import {
   VerificationSubmitted,
   verificationAnswer,
@@ -552,7 +551,6 @@ export function ApplicationDraft({
     <div className="member-journey">
       {status && (
         <>
-          <VerifyEmail email={status.email} verified={status.emailVerified} />
           <p>
             <strong>{status.verified ? "Verified" : "Not yet verified"}</strong>
             {status.updateRequested
@@ -652,19 +650,10 @@ export function ApplicationDraft({
             {draft.step === 0 && (
               <>
                 <label>
-                  Membership plan preference
-                  <select
-                    value={draft.plan}
-                    onChange={(e) =>
-                      edit({ ...current.current, plan: e.target.value })
-                    }
-                  >
-                    <option>Annual</option>
-                    <option>Life</option>
-                    <option>Patron</option>
-                  </select>
+                  Membership plan
+                  <input value={draft.plan} readOnly />
                 </label>
-                <p>Plan preference does not create paid membership.</p>
+                <p>Your membership plan is assigned by an administrator when your member record is created.</p>
               </>
             )}
             {draft.step === 2 && (

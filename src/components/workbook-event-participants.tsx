@@ -10,8 +10,8 @@ export function WorkbookEventParticipants({ events, initialDate }: { events: Wor
   const event = events.find(e => e.date === date);
   const rows = event?.rows.filter(r => (status === "all" || r.status === status) && [r.name, r.number, r.email, r.mobile, r.organisation].join(" ").toLowerCase().includes(query.toLowerCase())) || [];
   return <section className="participant-directory workbook-attendance" data-portal-primary>
-    <h2>Event attendance by date</h2>
-    <p>Attendance from the supplied workbook, linked to the Database sheet by membership number. Blank signatures are not recorded as attendance.</p>
+    <h2>Past event attendance</h2>
+    <p>Choose an event, then search its attendee list. A blank signature means attendance was not recorded.</p>
     <div className="participant-filters workbook-attendance-filters">
       <label>Event date<select value={date} onChange={e => {setDate(e.target.value); setQuery("");}}>{events.map(e => <option key={e.date} value={e.date}>{e.date.split("-").reverse().join("/")}{e.title ? ` · ${e.title}` : ""}</option>)}</select></label>
       <label>Attendance status<select value={status} onChange={e => setStatus(e.target.value)}>{["Attended", "Not attended", "Not recorded", "all"].map(s => <option key={s} value={s}>{s === "all" ? "All listed members" : s}</option>)}</select></label>

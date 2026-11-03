@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
 import "./premium.css";
 import "./v3.css";
@@ -29,7 +30,7 @@ export default function RootLayout({
       <head>
         <link rel="preload" href="/design/fonts/jakarta-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="preload" href="/design/fonts/cormorant-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-        <script dangerouslySetInnerHTML={{ __html: appearanceBootstrap }} />
+        <Script id="tpa-appearance-bootstrap" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: appearanceBootstrap }} />
       </head>
       <body className="tpa-premium">
         <noscript>
