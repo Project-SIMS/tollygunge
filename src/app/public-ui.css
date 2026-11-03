@@ -535,6 +535,20 @@
   flex: 1 1 300px;
   min-width: 0;
 }
+.public-shell .public-information .historical-event-poster {
+  display: grid;
+  gap: 10px;
+  flex: 0 1 280px;
+  width: min(100%, 280px);
+  color: var(--link);
+  font-size: 13px;
+}
+.public-shell .public-information .historical-event-poster img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+}
 .public-shell .public-information .event-row h3 {
   margin: 0 0 10px;
   font-size: 24px;

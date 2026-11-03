@@ -1,4 +1,5 @@
 import type { PublicHistoricalEvent } from "@/lib/public-historical-events";
+import { HistoricalEventPoster } from "./historical-event-poster";
 import Link from "next/link";
 import Image from "next/image";
 import { PublicInquiry } from "./public-inquiry";
@@ -230,6 +231,7 @@ export function PublicContentView({
                     ))}
                 {page === "events" && i === 1 && context.pastEvents?.map(event => (
                   <article className="event-row" key={event.date} id={`event-${event.date}`}>
+                    <HistoricalEventPoster date={event.date} />
                     <div><h3>{event.title}</h3>
                       <p><time dateTime={event.date}>{new Intl.DateTimeFormat("en-IN", {day:"numeric",month:"long",year:"numeric",timeZone:"Asia/Kolkata"}).format(new Date(`${event.date}T12:00:00+05:30`))}</time>{event.location ? ` · ${event.location}` : ""}</p>
                       {event.description && <p>{event.description}</p>}
