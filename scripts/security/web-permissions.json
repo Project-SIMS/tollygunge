@@ -190,6 +190,19 @@
     "SELECT",
     "UPDATE"
   ],
+  "tpa.finance_entries": [
+    "SELECT",
+    "INSERT",
+    "UPDATE"
+  ],
+  "tpa.finance_history": [
+    "SELECT",
+    "INSERT"
+  ],
+  "tpa.finance_proofs": [
+    "SELECT",
+    "INSERT"
+  ],
   "tpa.flyer_templates": [
     "SELECT"
   ],

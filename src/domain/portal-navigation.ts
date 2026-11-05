@@ -46,7 +46,7 @@ const admin: PortalGroup[] = [
       workspace("Email settings", "onboarding-email"),
     ],
   },
-  { label: "Finance", items: [workspace("Payments", "payments")] },
+  { label: "Finance", items: [workspace("Finance", "payments")] },
   {
     label: "Settings",
     items: [

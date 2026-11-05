@@ -96,7 +96,7 @@ export default async function Workspace({
           }
           description={
             participants
-              ? "Browse registrations, event payment status and attendance."
+              ? "Browse registrations, event receipt status and attendance."
               : undefined
           }
         />

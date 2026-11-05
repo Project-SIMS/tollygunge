@@ -170,7 +170,7 @@ export function AccountControls({
               <>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginBottom: 4 }}>
                   <strong style={{ margin: 0 }}>{actor.name}</strong>
-                  {actor.roles?.includes("administrator") ? (
+                  {(actor.roles?.includes("administrator") || actor.roles?.includes("super_administrator")) ? (
                     <span
                       style={{
                         fontSize: 10,
@@ -185,7 +185,7 @@ export function AccountControls({
                         flexShrink: 0,
                       }}
                     >
-                      Admin
+                      {actor.roles?.includes("super_administrator") ? "Super admin" : "Admin"}
                     </span>
                   ) : actor.plan ? (
                     <span
