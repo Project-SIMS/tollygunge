@@ -954,3 +954,129 @@
 @media (min-width:760px) and (max-width:1050px) {
   .portal.portal :global(.application-step-content .form-grid) { grid-template-columns:minmax(0,1fr); }
 }
+
+@media (max-width:759px) {
+  .portal.portal :global(.application-step-layout .member-stepper) { display:flex; overflow-x:auto; gap:8px; padding:2px 2px 8px; }
+  .portal.portal.portal :global(.application-step-layout .member-stepper .button) { flex:0 0 160px; justify-content:flex-start; text-align:left; min-height:60px; }
+  .portal.portal :global(.application-step-layout .member-stepper .button > span:last-child) { display:block; }
+}
+
+
+.portal :global(.attendance-month-picker) { grid-column:2; grid-row:1; position:relative; justify-self:end; }
+.portal :global(.attendance-month-picker > summary) { display:flex; align-items:center; justify-content:center; width:40px; height:40px; padding:8px; border:1px solid var(--line); border-radius:8px; color:var(--accent-text); cursor:pointer; list-style:none; }
+.portal :global(.attendance-month-picker > summary::-webkit-details-marker) { display:none; }
+.portal :global(.attendance-month-picker > summary:hover) { background:var(--portal-hover); }
+.portal :global(.attendance-month-picker > summary:focus-visible) { outline:2px solid var(--portal-focus); outline-offset:3px; }
+.portal :global(.attendance-month-panel) { position:absolute; top:calc(100% + 8px); right:0; z-index:100; display:grid; gap:14px; width:min(260px,calc(100vw - 80px)); padding:16px; border:1px solid var(--line); border-radius:10px; background:var(--surface); box-shadow:var(--shadow-popover); }
+.portal :global(.attendance-month-panel label) { display:grid; gap:8px; font-weight:600; }
+.portal :global(.attendance-month-panel input) { width:100%; min-width:0; }
+.portal :global(.attendance-selected-month) { color:var(--ink); font-weight:600; }
+
+/* Attendance is one readable list; totals and the month filter share a header. */
+.portal.portal.portal :global(.member-event-journey) { padding:24px !important; }
+.portal.portal :global(.event-journey-grid) { display:flex; flex-direction:column; gap:24px; }
+.portal.portal :global(.event-attendance-stat) { display:flex; align-items:center; justify-content:space-between; gap:20px; padding:0 0 24px; border-bottom:1px solid var(--line); }
+.portal :global(.attendance-total) { display:flex; align-items:center; gap:14px; }
+.portal :global(.attendance-total strong) { font-size:36px; font-weight:700; line-height:1; color:var(--ink); }
+.portal :global(.attendance-total span) { font-size:14px; font-weight:500; color:var(--muted); }
+.portal.portal :global(.attendance-month-picker) { order:2; flex:none; }
+.portal.portal :global(.attendance-month-picker > summary) { width:auto; gap:8px; padding:10px 12px; font-size:13px; font-weight:600; }
+.portal.portal :global(.event-journey-detail) { padding:0; border:0; }
+.portal :global(.attendance-list-heading) { display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:6px 16px; margin-bottom:12px; }
+.portal :global(.attendance-list-heading h3) { margin:0; font-size:16px; }
+.portal.portal :global(.attendance-list-heading p) { margin:0; font-size:12px; }
+.portal :global(.attendance-history-list) { gap:0; }
+.portal :global(.attendance-history-list li) { display:flex; justify-content:space-between; align-items:flex-start; gap:20px; padding:20px 0; border-bottom:1px solid var(--line); }
+.portal :global(.attendance-history-list li:last-child) { border-bottom:0; padding-bottom:0; }
+.portal :global(.attendance-history-list h4) { font-size:15px; font-weight:600; line-height:1.6; margin:0 0 6px; max-width:65ch; color:var(--ink); }
+.portal :global(.attendance-history-list time) { font-size:13px; color:var(--muted); }
+.portal :global(.attendance-outcome) { flex:none; font-size:12px; font-weight:600; padding:4px 10px; border-radius:6px; color:var(--status-success); background:var(--status-success-bg); }
+.portal :global(.attendance-earned-badges) { padding-top:20px; border-top:1px solid var(--line); }
+@media(max-width:540px) {
+  .portal.portal :global(.event-attendance-stat) { flex-wrap:wrap; gap:16px; }
+  .portal :global(.attendance-history-list li) { gap:12px; flex-wrap:wrap; }
+  .portal :global(.attendance-total strong) { font-size:30px; }
+}
+
+.portal :global(.application-topline) { display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap; margin-bottom:20px; }
+.portal :global(.application-topline .portal-subsections) { margin:0; }
+.portal :global(.application-completion) { flex:0 1 360px; min-width:220px; margin-left:auto; }
+.portal :global(.application-completion > div) { display:flex; justify-content:space-between; align-items:baseline; gap:12px; margin-bottom:8px; font-size:12px; }
+.portal :global(.application-completion strong) { color:var(--ink); font-size:14px; }
+.portal :global(.application-completion span) { color:var(--muted); }
+.portal :global(.application-completion progress) { display:block; width:100%; height:8px; overflow:hidden; border:0; border-radius:99px; background:var(--line); accent-color:var(--action-bg); }
+.portal :global(.application-completion progress::-webkit-progress-bar) { background:var(--line); border-radius:99px; }
+.portal :global(.application-completion progress::-webkit-progress-value) { background:var(--action-bg); border-radius:99px; transition:width 160ms ease; }
+.portal :global(.application-completion progress::-moz-progress-bar) { background:var(--action-bg); border-radius:99px; }
+@media(max-width:600px) { .portal :global(.application-completion) { flex-basis:100%; margin-left:0; } }
+
+.portal :global(.member-multiselect-field) { display:grid; align-content:start; gap:8px; min-width:0; }
+.portal :global(.checkbox-dropdown) { position:relative; min-width:0; }
+.portal :global(.checkbox-dropdown > summary) { display:flex; align-items:center; gap:10px; min-height:44px; padding:10px 12px; color:var(--ink); background:var(--control); border:1px solid var(--line); border-radius:8px; cursor:pointer; list-style:none; }
+.portal :global(.checkbox-dropdown > summary::-webkit-details-marker) { display:none; }
+.portal :global(.checkbox-dropdown > summary > span:first-child) { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; }
+.portal :global(.checkbox-dropdown > summary .portal-icon) { flex:none; width:16px; height:16px; transform:rotate(90deg); }
+.portal :global(.checkbox-dropdown[open] > summary .portal-icon) { transform:rotate(-90deg); }
+.portal :global(.checkbox-dropdown > summary:focus-visible) { outline:2px solid var(--portal-focus); outline-offset:2px; }
+.portal :global(.checkbox-dropdown-count) { padding:1px 7px; border-radius:4px; background:var(--portal-active); color:var(--ink); font-size:12px; }
+.portal :global(.checkbox-dropdown-options) { position:absolute; top:calc(100% + 6px); left:0; right:0; z-index:40; max-height:280px; overflow:auto; padding:8px; background:var(--surface); border:1px solid var(--line); border-radius:8px; box-shadow:var(--shadow-popover); }
+.portal :global(.checkbox-dropdown-options p) { margin:4px 8px 8px; font-size:12px; color:var(--muted); }
+.portal.portal :global(.checkbox-dropdown-options label) { display:flex; align-items:center; gap:10px; padding:10px 8px; margin:0; border-radius:4px; cursor:pointer; font-weight:400; }
+.portal :global(.checkbox-dropdown-options label:hover) { background:var(--portal-hover); }
+.portal :global(.checkbox-dropdown-options input[type=checkbox]) { width:18px; height:18px; margin:0; flex:none; }
+
+.portal :global(.address-pair) { display:grid; gap:16px; min-width:0; }
+.portal.portal :global(.address-same-toggle) { display:flex; align-items:center; gap:10px; font-size:13px; }
+.portal :global(.address-pair-grid) { display:grid; grid-template-columns:minmax(0,1fr); gap:20px; align-items:start; }
+.portal :global(.address-pair-grid > .address-section) { min-width:0; margin:0; grid-column:auto; }
+.portal.portal.portal :global(.address-pair-grid .form-grid) { grid-template-columns:minmax(0,1fr); }
+.portal :global(.address-same-preview > p) { overflow-wrap:anywhere; line-height:1.7; }
+.portal :global(.address-same-preview small) { color:var(--muted); }
+@media(min-width:1000px) { .portal :global(.address-pair-grid) { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+
+.portal :global(.contact-number-fields) { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px 20px; min-width:0; }
+@media(max-width:600px) { .portal :global(.contact-number-fields) { grid-template-columns:minmax(0,1fr); } }
+
+.portal :global(.application-form-sections) { display:grid; gap:28px; }
+.portal :global(.application-form-section) { min-width:0; }
+.portal :global(.application-form-section + .application-form-section) { border-top:1px solid var(--line); padding-top:24px; }
+.portal :global(.application-form-section h3) { margin:0 0 16px; font-size:15px; line-height:1.5; color:var(--ink); }
+.portal :global(.application-section-heading) { display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:8px 20px; margin-bottom:16px; }
+.portal :global(.application-section-heading h3) { margin:0; }
+.portal.portal.portal :global(.application-section-heading .address-same-toggle) { display:flex; flex-direction:row; align-items:center; gap:8px; margin:0; font-size:12px; font-weight:400; }
+.portal :global(.application-section-heading .address-same-toggle input) { margin:0; flex:none; }
+.portal :global(.application-personal-grid label:has(#verification-fullName)) { grid-column:auto; }
+@media(min-width:1051px) {
+  .portal.portal :global(.application-personal-grid) { grid-template-columns:minmax(100px,1fr) minmax(0,2fr); }
+  .portal :global(.application-personal-grid label:has(#verification-dateOfBirth)) { grid-column:1 / -1; max-width:calc(50% - 10px); }
+}
+@media(max-width:600px) { .portal :global(.application-form-sections) { gap:24px; } }
+
+.portal.portal :global(.application-form-sections > .application-form-section) { padding:0; border-bottom:0; margin:0; }
+.portal.portal :global(.application-form-sections > .application-form-section + .application-form-section) { padding-top:24px; border-top:1px solid var(--line); }
+.portal :global(.member-event-views) { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 20px; }
+.portal :global(.member-event-views button[aria-pressed=true]) { background:var(--gold); color:#1a2238; border-color:var(--gold); }
+.portal :global(.member-upcoming-intro h2) { margin:0 0 12px; font-size:20px; }
+.portal :global(.member-upcoming-intro p) { color:var(--muted); }
+
+.portal :global(.application-review-list) { margin:16px 0 28px; }
+.portal.portal :global(.application-review-list > .application-review-row) { display:grid; grid-template-columns:minmax(140px, .8fr) minmax(0, 1.5fr); gap:16px 24px; padding:16px 0; border-bottom:1px solid var(--line); }
+.portal :global(.application-review-row dt) { color:var(--muted); font-size:13px; }
+.portal :global(.application-review-row dd) { margin:0; min-width:0; }
+.portal :global(.application-review-value) { display:flex; align-items:baseline; justify-content:space-between; gap:16px; }
+.portal :global(.application-review-value > span) { overflow-wrap:anywhere; }
+.portal :global(.application-review-value button) { flex:none; color:var(--link); font-weight:600; }
+.portal.portal :global(.application-review-editor) { display:grid; min-width:0; gap:14px; margin:16px 0 0; padding:16px; border:1px solid var(--line); border-radius:8px; background:var(--surface-muted); }
+.portal :global(.application-review-editor > .button) { justify-self:start; }
+@media(max-width:650px) { .portal.portal :global(.application-review-list > .application-review-row) { grid-template-columns:minmax(0,1fr); gap:8px; } }
+
+.portal.portal :global(.application-final-declaration) { margin:24px 0; padding:24px 0 0; border:0; border-top:1px solid var(--line); }
+
+.portal :global(.header-profile-verified) { display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px; font-size:12px; font-weight:600; white-space:nowrap; color:var(--status-success); background:var(--status-success-bg); }
+.portal :global(.header-profile-verified .portal-icon) { width:18px; height:18px; }
+@media(max-width:600px) {
+  .portal :global(.header-profile-verified) { padding:8px; }
+  .portal :global(.header-profile-verified > span) { position:absolute; width:1px; height:1px; padding:0; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+}
+
+.portal :global(.header-profile-verified.is-unverified) { color:var(--status-warning); background:var(--status-warning-bg); }

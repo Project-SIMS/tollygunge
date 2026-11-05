@@ -26,7 +26,7 @@ export default async function Login({
       ? query.email
       : "";
   const actor = await currentActor();
-  if (actor && !switching) redirect(returnTo ?? (actor.roles.length ? "/admin" : "/member"));
+  if (actor && !switching) redirect(returnTo ?? (actor.roles.length ? "/admin" : "/member/events"));
   const enabled =
     authConfigured() &&
     Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET);
@@ -42,7 +42,7 @@ export default async function Login({
               You are currently signed in as <strong>{actor.email}</strong>.
               Enter the other account’s email and password to change the active
               account in this browser.{" "}
-              <Link href={actor.roles.length ? "/admin" : "/member"}>
+              <Link href={actor.roles.length ? "/admin" : "/member/events"}>
                 Keep using your current account
               </Link>
               .

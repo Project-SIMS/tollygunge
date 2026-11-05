@@ -1,26 +1,23 @@
 import type { PublicHistoricalEvent } from "@/lib/public-historical-events";
+import { selectPublicEvents } from "@/domain/public-event-selection";
 import Link from "next/link";
 import { NewsletterSignup } from "./newsletter-signup";
 export type HomeEvent = { id: string; title: string; starts_at: Date | string; location: string };
 export function HomepageEventsView({ events, pastEvents = [], readOnly = false, heading = "Make room for what comes next." }: { events: HomeEvent[]; pastEvents?: PublicHistoricalEvent[]; readOnly?: boolean; heading?: string }) {
+  const selected = selectPublicEvents(events, pastEvents);
+  const recent = [
+    ...selected.events.map(event => ({ key: event.id, title: event.title, location: event.location, date: new Date(event.starts_at), href: `/events/${event.id}` })),
+    ...selected.historical.map(event => ({ key: event.date, title: event.title, location: event.location, date: new Date(`${event.date}T12:00:00+05:30`), href: `/events/history/${event.date}` })),
+  ].sort((a, b) => b.date.getTime() - a.date.getTime());
   const date = new Intl.DateTimeFormat("en-IN", { day: "2-digit", month: "short", timeZone: "Asia/Kolkata" });
-  const time = new Intl.DateTimeFormat("en-IN", { hour: "numeric", minute: "2-digit", timeZone: "Asia/Kolkata" });
   return <section className="v3-events" aria-labelledby="home-events-title">
     <div className="v3-section-inner">
-      <div className="section-heading"><div><span className="eyebrow">EVENTS & LEARNING</span><h2 id="home-events-title">{heading === "Make room for what comes next." ? <>Make room for<br /><em>what comes next.</em></> : heading}</h2></div><Link className="text-link" href="/events">View all events <span aria-hidden="true">↗</span></Link></div>
-      {events.length ? <ul className="v3-event-list">{events.map(event => <li key={event.id}>
-        <time dateTime={new Date(event.starts_at).toISOString()}>{date.format(new Date(event.starts_at))}</time>
-        <div><h3><Link href={`/events/${event.id}`}>{event.title}</Link></h3><p>{time.format(new Date(event.starts_at))} IST{event.location ? ` · ${event.location}` : ""}</p></div>
-        <Link className="button secondary" href={`/events/${event.id}`} aria-label={`View ${event.title}`}>View event <span aria-hidden="true">↗</span></Link>
-      </li>)}</ul> : <div className="v3-events-empty"><p>{pastEvents.length ? "No upcoming events are published yet." : "New events will appear here when they are published."}</p><Link className="button gold" href="/events">Explore the event calendar <span aria-hidden="true">→</span></Link></div>}
-      {pastEvents.length > 0 && <section aria-labelledby="home-past-events-title">
-        <div className="section-heading"><div><span className="eyebrow">PAST EVENTS</span><h3 id="home-past-events-title">Recent & past events</h3></div></div>
-        <ul className="v3-event-list">{pastEvents.slice(0, 5).map(event => <li key={event.date}>
-          <time dateTime={event.date}>{date.format(new Date(`${event.date}T12:00:00+05:30`))}</time>
-          <div><h3><Link href={`/events#event-${event.date}`}>{event.title}</Link></h3><p>{new Intl.DateTimeFormat("en-IN", {year:"numeric",timeZone:"Asia/Kolkata"}).format(new Date(`${event.date}T12:00:00+05:30`))}{event.location ? ` · ${event.location}` : ""}</p></div>
-          <Link className="button secondary" href={`/events#event-${event.date}`} aria-label={`View ${event.title}`}>View event <span aria-hidden="true">↗</span></Link>
-        </li>)}</ul>
-      </section>}
+      <div className="section-heading"><div><span className="eyebrow">EVENTS & LEARNING</span><h2 id="home-events-title">{heading === "Make room for what comes next." ? <>Make room for<br /><em>what comes next.</em></> : heading}</h2></div><Link className="text-link" href="/events">Browse event calendar <span aria-hidden="true">↗</span></Link></div>
+      {recent.length ? <ul className="v3-event-list">{recent.map(event => <li key={event.key}>
+        <time dateTime={event.date.toISOString()}>{date.format(event.date)}</time>
+        <div><h3><Link href={event.href}>{event.title}</Link></h3><p>{event.date.toLocaleDateString("en-IN", { year: "numeric", timeZone: "Asia/Kolkata" })}{event.location ? ` · ${event.location}` : ""}</p></div>
+        <Link className="button secondary" href={event.href} aria-label={`View ${event.title}`}>View event <span aria-hidden="true">↗</span></Link>
+      </li>)}</ul> : <div className="v3-events-empty"><p>New events will appear here when they are published.</p><Link className="button gold" href="/events">Explore the event calendar <span aria-hidden="true">→</span></Link></div>}
       <NewsletterSignup readOnly={readOnly} />
     </div>
   </section>;

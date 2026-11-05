@@ -1,10 +1,6 @@
 "use client";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { emptyAddress, type StructuredAddress } from "@/domain/address";
-type Candidate = Pick<
-  StructuredAddress,
-  "state" | "district" | "postalLocality" | "postalCode"
->;
 type Locations = {
   states: string[];
   districts: string[];
@@ -52,12 +48,11 @@ export function AddressForm({
   const [pinState, setPinState] = useState<{
     busy?: boolean;
     message?: string;
-    candidates?: Candidate[];
   }>({});
   const pinRequest = useRef<AbortController | null>(null);
   const latestAddress = useRef(address);
   const automaticPin = useRef(
-    value?.state && value?.district && value?.postalLocality
+    value?.state && value?.district
       ? value.postalCode
       : "",
   );
@@ -65,6 +60,7 @@ export function AddressForm({
     latestAddress.current = address;
   }, [address]);
   const key = new URLSearchParams({
+    pin: /^[1-9]\d{5}$/.test(address.postalCode) ? address.postalCode : "",
     state: address.state,
     district: address.district,
   }).toString();
@@ -89,7 +85,7 @@ export function AddressForm({
   const data = current?.data,
     loading = !current && address.country === "IN";
   function change(field: keyof StructuredAddress, text: string) {
-    if (field !== "line1" && field !== "line2") {
+    if (["country", "state", "district", "postalCode"].includes(field)) {
       pinRequest.current?.abort();
       setPinState({});
     }
@@ -101,25 +97,8 @@ export function AddressForm({
         line1: address.line1,
         line2: address.line2,
       };
-    if (field === "state")
-      next = {
-        ...next,
-        district: "",
-        city: "",
-        postalLocality: "",
-        postalCode: "",
-      };
-    if (field === "district")
-      next = { ...next, city: "", postalLocality: "", postalCode: "" };
-    if (
-      field === "postalLocality" &&
-      !data?.localities.some(
-        (r) => r.locality === text && r.pin === address.postalCode,
-      )
-    )
-      next = { ...next, postalCode: "" };
-    if (field === "postalCode" && address.country === "IN")
-      next = { ...next, state: "", district: "", city: "", postalLocality: "" };
+    if (field === "state") next = { ...next, district: "" };
+    if (field === "postalCode" && address.country === "IN") next = { ...next, state: "", district: "" };
     onChange(next);
   }
   const resolvePin = useCallback(async () => {
@@ -127,7 +106,7 @@ export function AddressForm({
     pinRequest.current?.abort();
     const controller = new AbortController();
     pinRequest.current = controller;
-    setPinState({ busy: true, message: "Looking up postal localities…" });
+    setPinState({ busy: true });
     try {
       const response = await fetch(
         `/api/member/locations?pin=${encodeURIComponent(requested.postalCode)}`,
@@ -136,37 +115,12 @@ export function AddressForm({
       const result: Locations & { error?: string } = await response.json();
       if (!response.ok) throw Error(result.error || "PIN lookup failed.");
       if (controller.signal.aborted) return;
-      const candidates: Candidate[] = result.localities.map((r) => ({
-        state: r.state,
-        district: r.district,
-        postalLocality: r.locality,
-        postalCode: r.pin,
-      }));
-      const city = result.cities?.length === 1 ? result.cities[0] : "";
-      if (candidates.length === 1) {
-        onChange({ ...latestAddress.current, city, ...candidates[0] });
-        setPinState({
-          message:
-            "State, District and postal locality filled from PIN. Review these details.",
-        });
-      } else {
-        const states = [...new Set(candidates.map((c) => c.state))],
-          districts = [...new Set(candidates.map((c) => c.district))];
-        if (states.length === 1 && districts.length === 1)
-          onChange({
-            ...latestAddress.current,
-            state: states[0],
-            district: districts[0],
-            city,
-            postalLocality: "",
-          });
-        setPinState({
-          candidates,
-          message: candidates.length
-            ? "This PIN serves multiple postal localities. Choose your postal locality above."
-            : "No postal locality found for this PIN. Check the number and try again.",
-        });
+      const states = [...new Set(result.localities.map(row => row.state))];
+      const districts = [...new Set(result.localities.map(row => row.district))];
+      if (states.length === 1) {
+        onChange({ ...latestAddress.current, state: states[0], district: districts.length === 1 ? districts[0] : "" });
       }
+      setPinState({});
     } catch (error) {
       if (!controller.signal.aborted)
         setPinState({
@@ -188,7 +142,7 @@ export function AddressForm({
     }
     if (automaticPin.current === address.postalCode) return;
     automaticPin.current = address.postalCode;
-    if (address.state && address.district && address.postalLocality) return;
+    if (address.state && address.district) return;
     void resolvePin();
   }, [
     address.country,
@@ -196,6 +150,7 @@ export function AddressForm({
     address.state,
     address.district,
     address.postalLocality,
+    address.city,
     editing,
     resolvePin,
   ]);
@@ -253,11 +208,19 @@ export function AddressForm({
     );
   }
   function select(
-    field: "state" | "district" | "city" | "postalLocality",
+    field: "state" | "district",
     label: string,
     options: string[],
     enabled: boolean,
   ) {
+    options = options.filter(option => option.trim());
+    const pinReady = /^[1-9]\d{5}$/.test(address.postalCode);
+    const manual = pinReady && !loading && !pinState.busy && !options.length;
+    if (manual) return (
+      <div>
+        {input(field, label, true)}
+      </div>
+    );
     return (
       <label htmlFor={`${id}-${field}`}>
         {label}
@@ -267,32 +230,9 @@ export function AddressForm({
           aria-invalid={!!errors[field]}
           aria-describedby={errors[field] ? `${id}-${field}-error` : undefined}
           disabled={
-            !enabled ||
-            (!(field === "postalLocality" && pinState.candidates?.length) &&
-              (loading || !!current?.error))
+            !enabled || loading || !!current?.error
           }
-          onChange={(e) => {
-            const candidate =
-              field === "postalLocality"
-                ? pinState.candidates?.find(
-                    (c) => c.postalLocality === e.target.value,
-                  )
-                : undefined;
-            if (candidate) {
-              onChange({
-                ...address,
-                city:
-                  address.state === candidate.state &&
-                  address.district === candidate.district
-                    ? address.city
-                    : "",
-                ...candidate,
-              });
-              setPinState({
-                message: "Location filled from PIN. Review these details.",
-              });
-            } else change(field, e.target.value);
-          }}
+          onChange={event => change(field, event.target.value)}
         >
           <option value="">
             {!enabled
@@ -360,30 +300,10 @@ export function AddressForm({
               address.country === "IN" ? "PIN" : "Postal code",
               true,
             )}
-            {address.country === "IN" && (
-              <div className="postal-assistance form-span">
-                <small>
-                  Enter your six-digit PIN to fill location details
-                  automatically. Choose a postal locality if prompted, then
-                  review the details.
-                </small>
-              </div>
-            )}
             {address.country === "IN" ? (
               <>
-                {select(
-                  "postalLocality",
-                  "Postal locality",
-                  [
-                    ...new Set(
-                      pinState.candidates?.map((c) => c.postalLocality) ||
-                        data?.localities.map((r) => r.locality) ||
-                        [],
-                    ),
-                  ].sort(),
-                  !!address.district || !!pinState.candidates?.length,
-                )}
-                {select("city", "City", data?.cities || [], !!address.district)}
+                {input("postalLocality", "Locality", true)}
+                {input("city", "City", true)}
                 {select(
                   "district",
                   "District",
@@ -396,12 +316,7 @@ export function AddressForm({
                   data?.states || [],
                   true,
                 )}
-                {data && address.district && !data.cities.length && (
-                  <small className="field-help form-span">
-                    City aliases are not available for this district. Select
-                    your postal locality; city is optional.
-                  </small>
-                )}
+
               </>
             ) : (
               <>
@@ -440,36 +355,7 @@ export function AddressForm({
                   </button>
                 </p>
               )}
-              {data &&
-                address.postalLocality &&
-                data.localities.some(
-                  (r) => r.locality === address.postalLocality,
-                ) && (
-                  <p className="field-help">
-                    PINs for this postal locality:{" "}
-                    {[
-                      ...new Set(
-                        data.localities
-                          .filter((r) => r.locality === address.postalLocality)
-                          .map((r) => r.pin),
-                      ),
-                    ].join(", ")}
-                  </p>
-                )}
-              {data &&
-                address.postalLocality &&
-                address.postalCode &&
-                !data.localities.some(
-                  (r) =>
-                    r.locality === address.postalLocality &&
-                    r.pin === address.postalCode,
-                ) && (
-                  <p className="field-error" role="alert">
-                    This PIN does not match the selected postal locality.
-                    Re-enter your PIN or correct your selections.
-                  </p>
-                )}
-              <p role="status">{pinState.message}</p>
+              {pinState.message && <p role="alert">{pinState.message}</p>}
             </>
           )}
         </>

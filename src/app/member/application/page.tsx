@@ -24,13 +24,9 @@ export default async function Page({
   return (
     <SiteShell>
       <main id="main" className="member-content member-application">
-        <div className="portal-page-intro">
-          <header>
-            <h1 className="sr-only">Your verification details</h1>
-          </header>
-          <PortalSubsections />
-        </div>
+        <h1 className="sr-only">Your verification details</h1>
         <ApplicationDraft
+          navigation={<PortalSubsections />}
           name={actor.name}
           userId={actor.id}
           initialStep={initialStep}

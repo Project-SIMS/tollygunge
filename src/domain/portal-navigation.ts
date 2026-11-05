@@ -58,7 +58,7 @@ const admin: PortalGroup[] = [
 export function portalNavigation(roles: readonly string[]): PortalGroup[] {
   if (!roles.length)
     return [
-      { label: "Overview", items: [{ label: "Overview", href: "/member" }] },
+      { label: "Events", items: [{ label: "Events", href: "/member/events" }] },
       {
         label: "Membership",
         items: [
@@ -66,13 +66,12 @@ export function portalNavigation(roles: readonly string[]): PortalGroup[] {
           { label: "Payment details", href: "/member/payments" },
         ],
       },
-      { label: "Events", items: [{ label: "Events", href: "/member/events" }] },
       {
         label: "Inquiries",
         items: [{ label: "Inquiries", href: "/member/inquiries" }],
       },
       {
-        label: "Account",
+        label: "Profile",
         items: [
           { label: "Profile", href: "/account/profile" },
           { label: "Security", href: "/member/security" },

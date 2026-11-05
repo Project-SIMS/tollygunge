@@ -1,7 +1,8 @@
 import type { PublicHistoricalEvent } from "@/lib/public-historical-events";
 import { HistoricalEventPoster, hasHistoricalEventPoster } from "./historical-event-poster";
 
-export function HistoricalEventCard({ event }: { event: PublicHistoricalEvent }) {
+export function HistoricalEventCard({ event, detail = false }: { event: PublicHistoricalEvent; detail?: boolean }) {
+  const Heading = detail ? "h1" : "h3";
   const speakers = event.speakers.split(/[;\n]+/).map(name => name.trim()).filter(Boolean);
   const overview = event.description
     .replace(/\s+(?=Topics:|Held on \d|This is a past event)/g, "\n\n")
@@ -10,7 +11,7 @@ export function HistoricalEventCard({ event }: { event: PublicHistoricalEvent })
     <article className="event-row historical-event-card" id={`event-${event.date}`} aria-labelledby={`event-title-${event.date}`}>
       <header className="historical-event-card-header">
         <p className="historical-event-date"><time dateTime={event.date}>{new Intl.DateTimeFormat("en-IN", {day:"numeric",month:"long",year:"numeric",timeZone:"Asia/Kolkata"}).format(new Date(`${event.date}T12:00:00+05:30`))}</time></p>
-        <h3 id={`event-title-${event.date}`}>{event.title}</h3>
+        <Heading id={`event-title-${event.date}`}>{event.title}</Heading>
       </header>
       {(event.location || speakers.length > 0 || event.description || hasHistoricalEventPoster(event.date)) && <div className="historical-event-card-body">
         {(event.location || speakers.length > 0) && <div className="historical-event-copy">

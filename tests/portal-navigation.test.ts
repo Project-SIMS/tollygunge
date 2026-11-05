@@ -37,15 +37,14 @@ test("member groups include verification, payments and account security at their
   const groups = portalNavigation([]);
   assert.deepEqual(
     groups.map((group) => group.label),
-    ["Overview", "Membership", "Events", "Inquiries", "Account"],
+    ["Events", "Membership", "Inquiries", "Profile"],
   );
   assert.deepEqual(
     groups.flatMap((group) => group.items.map((item) => item.href)),
     [
-      "/member",
+      "/member/events",
       "/member/application",
       "/member/payments",
-      "/member/events",
       "/member/inquiries",
       "/account/profile",
       "/member/security",

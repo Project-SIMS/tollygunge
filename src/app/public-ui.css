@@ -17,7 +17,7 @@
   gap: 12px;
 }
 .public-shell .site-header .brand-name {
-  font-size: 9px;
+  font-size: 15px;
   letter-spacing: 0.06em;
 }
 .public-shell .site-header .desktop-nav {
@@ -1074,3 +1074,12 @@ html[data-color-mode="dark"]
   .public-shell a.text-link:focus-visible::after { transition: none; }
 }
 [dir="rtl"] .public-shell a.text-link::after { transform-origin: right; }
+
+.public-page-events .event-archive-filter { margin:0 0 32px; padding:24px; border:1px solid var(--line); border-radius:12px; background:var(--surface); }
+.public-page-events .event-archive-filter form { display:flex; align-items:flex-end; flex-wrap:wrap; gap:16px; }
+.public-page-events .event-archive-filter label { display:grid; gap:8px; font-weight:600; }
+.public-page-events .event-archive-filter input { min-height:44px; padding:10px 12px; color:var(--ink); background:var(--control); border:1px solid var(--line); border-radius:8px; font:inherit; }
+.public-page-events .event-archive-filter p { margin:16px 0 0; color:var(--muted); }
+
+.public-shell .historical-event-detail .historical-event-card h1 { font-size:clamp(26px,3.5vw,44px); line-height:1.2; margin:0; letter-spacing:-.025em; }
+.public-shell .historical-event-detail .historical-event-card { margin:24px 0 32px; }

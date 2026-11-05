@@ -25,11 +25,13 @@ export const currentActor = cache(async function currentActor(requestHeaders?: H
     if (!approved.rowCount) return null;
   }
   let plan: string | undefined;
+  let profileVerified: boolean | undefined;
   try {
-    const memRes = await getDatabase().query<{ type: string }>(
-      "SELECT m.type FROM tpa.memberships m JOIN tpa.people p ON p.id=m.person_id WHERE p.user_id=$1 LIMIT 1",
+    const memRes = await getDatabase().query<{ type: string | null; accepted_verified: boolean }>(
+      "SELECT m.type,p.accepted_verified FROM tpa.people p LEFT JOIN tpa.memberships m ON m.person_id=p.id WHERE p.user_id=$1 AND p.archived_at IS NULL LIMIT 1",
       [session.user.id],
     );
+    profileVerified = memRes.rows[0]?.accepted_verified ?? false;
     if (memRes.rows[0]?.type) {
       plan = memRes.rows[0].type;
     } else {
@@ -48,5 +50,6 @@ export const currentActor = cache(async function currentActor(requestHeaders?: H
     email: session.user.email,
     roles: rows.map((row) => row.role),
     plan,
+    profileVerified,
   };
 });

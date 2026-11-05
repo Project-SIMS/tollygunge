@@ -1,3 +1,4 @@
+import { registeredApplicationContact } from "@/domain/application-contact";
 import { validatePostalAddresses } from "./postal-directory";
 import "server-only";
 import { randomUUID } from "node:crypto";
@@ -49,7 +50,7 @@ export async function memberVerification(actor: Actor) {
   ).rows[0];
   const person = (
     await db.query(
-      "SELECT accepted_verified,verification_version,verification_update_requested FROM tpa.people WHERE user_id=$1",
+      "SELECT accepted_verified,verification_version,verification_update_requested,contact_email,mobile_normalized,accepted FROM tpa.people WHERE user_id=$1",
       [actor.id],
     )
   ).rows[0];
@@ -71,6 +72,7 @@ export async function memberVerification(actor: Actor) {
     policy: p,
     emailVerified: !!user?.emailVerified,
     email: actor.email,
+    registeredContact: registeredApplicationContact(person, actor.email),
     verified: !!person?.accepted_verified,
     updateRequested: !!person?.verification_update_requested,
     approvedVersion: person?.verification_version ?? null,

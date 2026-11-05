@@ -89,7 +89,7 @@ export function AccountControls({
   actor,
   portal = false,
 }: {
-  actor?: { id?: string; name: string; email: string; roles: string[]; plan?: string } | null;
+  actor?: { id?: string; name: string; email: string; roles: string[]; plan?: string; profileVerified?: boolean } | null;
   portal?: boolean;
 }) {
   const [open, setOpen] = useState(false);
@@ -124,6 +124,13 @@ export function AccountControls({
 
   return (
     <div className="account-controls">
+      {portal && actor && <span
+        className={`header-profile-verified${actor.profileVerified === true ? "" : " is-unverified"}`}
+        aria-label={actor.profileVerified === true ? "Profile verified" : "Profile unverified"}
+        title={actor.profileVerified === true ? "Your profile has been verified by TPA" : "Your profile has not yet been verified by TPA"}
+      >
+        <PortalIcon name="shield" /><span>{actor.profileVerified === true ? "Verified" : "Unverified"}</span>
+      </span>}
       {actor && !actor.id?.startsWith("preview") && <AttentionBell />}
       <div
         className="account-popover"
@@ -227,7 +234,7 @@ export function AccountControls({
                 <Link href="/account/profile">Your profile</Link>
                 <Link href="/member/security">Account security</Link>
                 <ReportIssueLink member />
-                {!portal && <Link href={actor.roles.length ? "/admin" : "/member"}>
+                {!portal && <Link href={actor.roles.length ? "/admin" : "/member/events"}>
                   {actor.roles.length ? "Staff workspace" : "Member portal"}
                 </Link>}
                 <Link href="/">Public website ↗</Link>
