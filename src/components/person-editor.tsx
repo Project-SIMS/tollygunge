@@ -258,7 +258,7 @@ export function PersonEditor({
   const pending = entry?.reviews?.find((r) => r.status === "pending");
   return (
     <div className={owner ? "member-profile-editor" : "person-editor"}>
-      <div className="content-editor-heading">
+      {!owner && <div className="content-editor-heading">
         <div>
           <h2>
             {owner ? "Your profile" : entry ? "Edit person" : "New person"}
@@ -283,8 +283,8 @@ export function PersonEditor({
                 )[entry.status]
               : "New profile"}
         </span>
-      </div>
-      {entry?.published && (
+      </div>}
+      {!owner && entry?.published && (
         <p className="notice">
           The public site retains its last published snapshot while you edit.
         </p>

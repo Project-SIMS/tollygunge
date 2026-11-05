@@ -9,7 +9,7 @@ import { NewPasswordField } from "./new-password-field";
 import { PortalIcon } from "./portal-icon";
 const client = createAuthClient();
 export function Signup({ returnTo }: { returnTo?: string }) {
-  const destination = eventReturnPath(returnTo) ?? "/member";
+  const destination = eventReturnPath(returnTo) ?? "/member/events";
   const router = useRouter();
   const [message, setMessage] = useState(""),
     [busy, setBusy] = useState(false);
@@ -87,7 +87,7 @@ export function VerifyEmail({
             try {
               const result = await client.sendVerificationEmail({
                 email,
-                callbackURL: "/member",
+                callbackURL: "/member/events",
               });
               setMessage(
                 result.error

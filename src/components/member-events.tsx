@@ -1,5 +1,6 @@
 "use client";
 import { MemberReceipts } from "./member-receipts";
+import { upcomingMemberEvents } from "@/domain/member-upcoming-events";
 import { CopyValue } from "./portal-values";
 import { eventTime, type Speaker } from "@/domain/event-flow";
 import { MemberEventResources } from "./event-operations";
@@ -41,7 +42,8 @@ export function MemberEvents() {
   const [events, setEvents] = useState<Event[]>([]),
     [message, setMessage] = useState("Loading events…"),
     [busy, setBusy] = useState(false);
-  const [period, setPeriod] = useState("all");
+  const [month, setMonth] = useState("");
+  const [view, setView] = useState<"attendance" | "upcoming">(requestedEvent ? "upcoming" : "attendance");
   const [loadState, setLoadState] = useState<"loading" | "ready" | "error">(
     "loading",
   );
@@ -70,39 +72,21 @@ export function MemberEvents() {
         setLoadState("error");
       });
   }, []);
+  const upcoming = upcomingMemberEvents(events);
+  const visibleEvents = view === "upcoming"
+    ? requestedEvent ? events.filter(event => event.id === requestedEvent || upcoming.some(item => item.id === event.id)) : upcoming
+    : [];
   return (
     <>
-      <MemberEventJourney />
-      <section
-        className="member-events-intro"
-        aria-labelledby="member-events-list-title"
-      >
-        <div>
-          <h2 id="member-events-list-title">Your events</h2>
-        </div>
-        <label>
-          Event period
-          <select value={period} onChange={(e) => setPeriod(e.target.value)}>
-            <option value="all">All events and history</option>
-            <option value="upcoming">Upcoming and live events</option>
-            <option value="past">Past events and attendance history</option>
-          </select>
-        </label>
-      </section>
-      <aside
-        className="member-event-guidance"
-        aria-label="Registration and attendance information"
-      >
-        <p>
-          <strong>Booking &amp; payment</strong>Paid registrations are confirmed
-          after manual payment verification.
-        </p>
-        <p>
-          <strong>Attendance &amp; learning</strong>Attendance is recorded
-          separately from registration. Learning-hour rules have not yet been
-          configured.
-        </p>
-      </aside>
+      <nav className="member-event-views segmented" aria-label="Event views">
+        <button type="button" aria-pressed={view === "attendance"} onClick={() => setView("attendance")}>Attendance history</button>
+        <button type="button" aria-pressed={view === "upcoming"} onClick={() => setView("upcoming")}>Upcoming registrations{upcoming.length ? ` (${upcoming.length})` : ""}</button>
+      </nav>
+      {view === "attendance" && <MemberEventJourney month={month} onMonthChange={setMonth} />}
+      {view === "upcoming" && <section className="member-upcoming-intro">
+        <h2>Your upcoming registrations</h2>
+        {loadState === "ready" && !visibleEvents.length && <p>You have no upcoming registrations. <Link href="/events">Browse events</Link></p>}
+      </section>}
       {loadState === "loading" && <LoadingScreen />}
       {loadState === "error" && (
         <FallbackPanel
@@ -113,35 +97,7 @@ export function MemberEvents() {
           }}
         />
       )}
-      {loadState === "ready" && events.length === 0 && (
-        <FallbackPanel compact kind="emptyEvents" />
-      )}
-      {loadState === "ready" &&
-        events.length > 0 &&
-        !events.some(
-          (e) =>
-            e.id === requestedEvent ||
-            period === "all" ||
-            (period === "past"
-              ? new Date(e.ends_at) <= new Date()
-              : new Date(e.ends_at) > new Date()),
-        ) && (
-          <section className="content-section">
-            <h3>No events in this period</h3>
-            <p>
-              Choose another period to see your events and attendance history.
-            </p>
-          </section>
-        )}
-      {[...events]
-        .filter(
-          (e) =>
-            e.id === requestedEvent ||
-            period === "all" ||
-            (period === "past"
-              ? new Date(e.ends_at) <= new Date()
-              : new Date(e.ends_at) > new Date()),
-        )
+      {[...visibleEvents]
         .sort(
           (a, b) =>
             Number(b.id === requestedEvent) - Number(a.id === requestedEvent),

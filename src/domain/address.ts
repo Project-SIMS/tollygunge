@@ -46,3 +46,11 @@ export function addressComplete(address: StructuredAddress) {
   return !!(address.line1 && address.country && address.state && address.postalCode &&
     (address.country === "IN" ? address.district && address.postalLocality : address.city));
 }
+
+/** Copy both stored representations, removing a stale structured residence. */
+export function copyOfficeToResidence(details: Record<string, string>): Record<string, string> {
+  const result: Record<string, string> = { ...details, residenceAddress: details.officeAddress ?? "" };
+  if (details.officeAddressStructured) result.residenceAddressStructured = details.officeAddressStructured;
+  else delete result.residenceAddressStructured;
+  return result;
+}

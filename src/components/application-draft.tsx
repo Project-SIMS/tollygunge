@@ -1,4 +1,5 @@
 "use client";
+import { prefillApplicationPhone } from "@/domain/application-contact";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -6,13 +7,19 @@ import { api, ApiError } from "./operations-client";
 import {
   applicable,
   missingFields,
-  verificationSteps,
+  verificationProgress,
+  memberApplicationSteps,
+  memberApplicationStep,
+  memberApplicationFieldStep,
+  adjacentApplicationStep,
   type VerificationField,
 } from "@/domain/verification";
 import { recovery } from "./draft-recovery";
+import { CheckboxDropdown } from "./checkbox-dropdown";
 import { AddressForm } from "./address-form";
 import {
   emptyAddress,
+  copyOfficeToResidence,
   formatAddress,
   type StructuredAddress,
 } from "@/domain/address";
@@ -36,6 +43,7 @@ type Status = {
   policy: { version: number; fields: VerificationField[] };
   email: string;
   emailVerified: boolean;
+  registeredContact?: { email: string; phone: string };
   verified: boolean;
   updateRequested: boolean;
   missing: string[];
@@ -45,12 +53,16 @@ export function ApplicationDraft({
   name,
   userId,
   initialStep,
+  navigation,
 }: {
   name: string;
   userId: string;
   initialStep?: number;
+  navigation?: React.ReactNode;
 }) {
   const router = useRouter();
+  const [reviewEditing, setReviewEditing] = useState<string | null>(null);
+  const [sameAddress, setSameAddress] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
   const [editingSubmission, setEditingSubmission] = useState(false);
   const [submitted, setSubmitted] = useState<SubmittedApplication | null>(null);
@@ -60,7 +72,7 @@ export function ApplicationDraft({
       category: "Professional",
       details: { fullName: name },
       documentIds: [],
-      step: initialStep ?? 0,
+      step: memberApplicationStep(initialStep ?? 0),
     }),
     [status, setStatus] = useState<Status | null>(null),
     [message, setMessage] = useState("Loading your saved form…"),
@@ -91,11 +103,17 @@ export function ApplicationDraft({
       .then(([saved, st, buffer, profile]) => {
         if (!active) return;
         if (saved) {
+          setSameAddress(!!saved.details.officeAddress && saved.details.officeAddress === saved.details.residenceAddress && (saved.details.officeAddressStructured ?? "") === (saved.details.residenceAddressStructured ?? ""));
           current.current = {
             ...saved,
+            details: prefillApplicationPhone(saved.details, st.registeredContact?.phone ?? ""),
             category: "Professional",
-            step: initialStep ?? saved.step ?? 0,
+            step: memberApplicationStep(initialStep ?? saved.step ?? 0),
           };
+          if (current.current.details.phone !== saved.details.phone) {
+            dirty.current = true;
+            change.current++;
+          }
           if (saved.category !== "Professional") {
             dirty.current = true;
             change.current++;
@@ -107,10 +125,13 @@ export function ApplicationDraft({
             ...current.current,
             details: {
               fullName: profile.person.draft.name,
-              phone: profile.person.draft.phone,
+              phone: st.registeredContact?.phone || profile.person.draft.phone,
               organization: profile.person.draft.organization,
             },
           };
+          setDraft(current.current);
+        } else if (st.registeredContact?.phone) {
+          current.current = { ...current.current, details: prefillApplicationPhone(current.current.details, st.registeredContact.phone) };
           setDraft(current.current);
         }
         setStatus(st);
@@ -186,7 +207,7 @@ export function ApplicationDraft({
   }
   function edit(next: Draft) {
     setFieldErrors({});
-    next = { ...next, category: "Professional" };
+    next = { ...next, category: "Professional", details: sameAddress ? copyOfficeToResidence(next.details) : next.details };
     current.current = next;
     dirty.current = true;
     change.current++;
@@ -294,6 +315,13 @@ export function ApplicationDraft({
   }
   function renderField(f: VerificationField) {
     if (["officeAddress", "residenceAddress"].includes(f.id)) {
+      if (f.id === "residenceAddress" && sameAddress) return (
+        <section className="address-section form-span address-same-preview" key={f.id} aria-label="Permanent address">
+          <div className="form-section-heading"><h3>Permanent address</h3><p>Same as correspondence address</p></div>
+          <p>{draft.details.officeAddress || "Enter your correspondence address. It will also be used as your permanent address."}</p>
+          <small>Updates to the correspondence address will also update this address.</small>
+        </section>
+      );
       let value;
       try {
         value = draft.details[`${f.id}Structured`]
@@ -309,7 +337,7 @@ export function ApplicationDraft({
         <AddressForm
           key={f.id}
           title={
-            f.id === "officeAddress" ? "Office address" : "Residential address"
+            f.id === "officeAddress" ? "Correspondence address" : "Permanent address"
           }
           value={value}
           legacy={draft.details[f.id]}
@@ -353,19 +381,19 @@ export function ApplicationDraft({
           ? `verification-${f.id}-help`
           : undefined,
     };
+    const Wrapper = f.type === "multiselect" ? "div" : "label";
     return (
-      <label
+      <Wrapper
         key={f.id}
         className={
           f.type === "checkbox"
             ? "member-check-field"
             : f.type === "multiline"
               ? "form-span"
-              : undefined
+              : f.type === "multiselect" ? "member-multiselect-field" : undefined
         }
       >
-        {f.label}
-        {required ? " *" : " (optional)"}
+        <span>{f.label}{required ? " *" : " (optional)"}</span>
         {f.type === "multiline" ? (
           <textarea
             id={"verification-" + f.id}
@@ -387,24 +415,16 @@ export function ApplicationDraft({
             ))}
           </select>
         ) : f.type === "multiselect" ? (
-          <select
+          <CheckboxDropdown
             id={"verification-" + f.id}
-            {...accessibility}
-            multiple
-            value={value ? JSON.parse(value) : []}
-            onChange={(e) =>
-              answer(
-                f.id,
-                JSON.stringify(
-                  [...e.target.selectedOptions].map((o) => o.value),
-                ),
-              )
-            }
-          >
-            {f.options?.map((o) => (
-              <option key={o}>{o}</option>
-            ))}
-          </select>
+            label={f.label}
+            options={f.options ?? []}
+            value={value}
+            invalid={!!error}
+            describedBy={accessibility["aria-describedby"]}
+            required={required}
+            onChange={value => answer(f.id, value)}
+          />
         ) : f.type === "checkbox" ? (
           <input
             id={"verification-" + f.id}
@@ -463,7 +483,7 @@ export function ApplicationDraft({
             {error}
           </small>
         )}
-      </label>
+      </Wrapper>
     );
   }
   const optionalGroups = [
@@ -471,26 +491,17 @@ export function ApplicationDraft({
       title: "Family & health details",
       ids: ["fatherName", "spouseName", "bloodGroup", "spouseBloodGroup"],
     },
-    {
-      title: "Additional contact numbers",
-      ids: ["officePhone", "residencePhone", "fax"],
-    },
-    {
-      title: "Referrals",
-      ids: [
-        "proposerName",
-        "proposerNumber",
-        "proposerSignature",
-        "seconderName",
-        "seconderNumber",
-        "seconderSignature",
-      ],
-    },
   ];
   const activeFields =
     status?.policy.fields.filter(
-      (f) => f.step === draft.step && applicable(f, draft.category),
+      (f) => !/^(proposer|seconder)/.test(f.id) && ! ["correspondenceAddress", "deliveryPreference"].includes(f.id) && memberApplicationFieldStep(f) === memberApplicationStep(draft.step) && applicable(f, draft.category),
     ) ?? [];
+  const photographIndex = activeFields.findIndex(field => field.id === "photograph");
+  const registrationIndex = activeFields.findIndex(field => field.id === "registration");
+  if (photographIndex >= 0 && registrationIndex >= 0 && photographIndex > registrationIndex) {
+    const [photograph] = activeFields.splice(photographIndex, 1);
+    activeFields.splice(registrationIndex + 1, 0, photograph);
+  }
   const isRequired = (f: VerificationField) =>
     f.required ||
     !!(
@@ -521,6 +532,34 @@ export function ApplicationDraft({
         status.emailVerified,
       )
     : [];
+  const progress = status ? verificationProgress(status.policy.fields, draft.details, draft.category, status.emailVerified) : null;
+  const standardPersonalIds = ["title", "fullName", "dateOfBirth"];
+  const standardContactIds = ["phone", "officePhone", "residencePhone", "fax"];
+  const preferenceIds = ["correspondenceAddress", "deliveryPreference"];
+  const professionalIds = ["qualification", "professionalStatus", "organization", "professionalBody", "registration", "certificate"];
+  const interestIds = ["contributions", "contributionsOther", "interests", "interestsOther"];
+  const directFields = activeFields.filter(field => !optionalIds.includes(field.id) || isRequired(field));
+  function orderedFields(ids: string[]) {
+    return ids.flatMap(id => directFields.filter(field => field.id === id)).map(renderField);
+  }
+  function renderAddresses() {
+    const office = directFields.find(field => field.id === "officeAddress");
+    const residence = directFields.find(field => field.id === "residenceAddress");
+    if (!office && !residence) return null;
+    return <section className="application-form-section">
+      <div className="application-section-heading"><h3>Addresses</h3>
+        {office && residence && <label className="address-same-toggle">
+          <input type="checkbox" checked={sameAddress} onChange={event => {
+            const checked = event.target.checked;
+            setSameAddress(checked);
+            if (checked) edit({ ...current.current, details: copyOfficeToResidence(current.current.details) });
+          }} />
+          Permanent address is the same as correspondence
+        </label>}
+      </div>
+      <div className="address-pair-grid">{office && renderField(office)}{residence && renderField(residence)}</div>
+    </section>;
+  }
   const completedSubmission = submitted ?? status?.latestSubmission;
   if (
     ready &&
@@ -532,7 +571,7 @@ export function ApplicationDraft({
       (status.reviews[0]?.status === "approved" && !status.updateRequested))
   ) {
     return (
-      <VerificationSubmitted
+      <div className="member-journey">{navigation}<VerificationSubmitted
         submission={completedSubmission}
         fields={completedSubmission.fields ?? status.policy.fields}
         reviewStatus={submitted ? "pending" : status.reviews[0]?.status}
@@ -544,19 +583,21 @@ export function ApplicationDraft({
             "Editing your saved draft. Submit it again to send updated details for review.",
           );
         }}
-      />
+      /></div>
     );
   }
   return (
     <div className="member-journey">
+      <div className="application-topline">
+        {navigation}
+        <section className="application-completion" aria-label="Application completion">
+          <div><strong id="application-completion-label">{progress ? `${progress.percent}% complete` : "Loading progress…"}</strong>
+            {progress && <span>{progress.completed} of {progress.total} required items</span>}</div>
+          <progress aria-labelledby="application-completion-label" max={100} {...(progress ? { value: progress.percent } : {})} />
+        </section>
+      </div>
       {status && (
         <>
-          <p>
-            <strong>{status.verified ? "Verified" : "Not yet verified"}</strong>
-            {status.updateRequested
-              ? " · Update requested — your badge remains active."
-              : ""}
-          </p>
           {status.reviews[0] && (
             <p>
               Latest review: {status.reviews[0].status}{" "}
@@ -602,12 +643,12 @@ export function ApplicationDraft({
       )}
       <div className="application-step-layout">
       <nav className="member-stepper" aria-label="Application steps">
-        {verificationSteps.map((s, i) => (
+        {memberApplicationSteps.map(({ label: s, step: i }) => (
           <button
             key={s}
             className="button secondary"
-            aria-label={`${i + 1}. ${s}`}
-            aria-current={draft.step === i ? "step" : undefined}
+            aria-label={s}
+            aria-current={memberApplicationStep(draft.step) === i ? "step" : undefined}
             disabled={!ready || busy}
             onClick={async () => {
               if (await save()) {
@@ -616,7 +657,6 @@ export function ApplicationDraft({
               }
             }}
           >
-            <span className="member-step-number">{i + 1}.</span>
             <span>{s}</span>
           </button>
         ))}
@@ -625,8 +665,7 @@ export function ApplicationDraft({
       {converted && (
         <p className="notice" role="status">
           Your previous Student draft is now a professional application. Saved
-          answers and documents are retained. Add professional details and a
-          certificate before submitting.
+          answers and documents are retained. Add your professional details before submitting.
         </p>
       )}
       <form
@@ -639,38 +678,46 @@ export function ApplicationDraft({
           await save();
         }}
       >
-        <div className="member-form-heading">
-          <span className="eyebrow">STEP {draft.step + 1} OF 5</span>
-          <h2>{verificationSteps[draft.step]}</h2>
-          <p>
-            Fields marked * are required. You can save an incomplete form and
-            return later.
-          </p>
-        </div>
-        <fieldset disabled={!ready || busy || conflict}>
-          <div className="form-grid">
-            {draft.step === 0 && (
-              <>
-                <label>
-                  Membership plan
-                  <input value={draft.plan} readOnly />
-                </label>
-                <p>Your membership plan is assigned by an administrator when your member record is created.</p>
-              </>
-            )}
-            {draft.step === 2 && (
-              <label>
-                Account email
-                <input value={status?.email ?? ""} readOnly />
-                <small>
-                  Email verification is separate from profile verification.
-                </small>
-              </label>
-            )}
-            {activeFields
-              .filter((f) => !optionalIds.includes(f.id) || isRequired(f))
-              .map(renderField)}
-          </div>
+        <h2 className="sr-only">{memberApplicationSteps.find(item => item.step === memberApplicationStep(draft.step))?.label}</h2>
+        {draft.step !== 4 && <fieldset disabled={!ready || busy || conflict}>
+          {memberApplicationStep(draft.step) === 1 ? <div className="application-form-sections">
+            {directFields.some(field => standardPersonalIds.includes(field.id)) && <section className="application-form-section">
+              <h3>Personal details</h3>
+              <div className="form-grid application-personal-grid">{orderedFields(standardPersonalIds)}</div>
+            </section>}
+            <section className="application-form-section">
+              <h3>Contact details</h3>
+              <div className="form-grid">
+                <label>Registered email<input value={status?.registeredContact?.email || status?.email || ""} readOnly /></label>
+                {orderedFields(standardContactIds)}
+              </div>
+            </section>
+            {renderAddresses()}
+            {directFields.some(field => ![...standardPersonalIds, ...standardContactIds, ...preferenceIds, "officeAddress", "residenceAddress"].includes(field.id)) && <section className="application-form-section">
+              <h3>Additional details</h3>
+              <div className="form-grid">{directFields.filter(field => ![...standardPersonalIds, ...standardContactIds, ...preferenceIds, "officeAddress", "residenceAddress"].includes(field.id)).map(renderField)}</div>
+            </section>}
+          </div> : memberApplicationStep(draft.step) === 0 ? <div className="application-form-sections">
+            <section className="application-form-section">
+              <h3>Membership &amp; photograph</h3>
+              <div className="form-grid">
+                <label>Membership plan<input value={draft.plan} readOnly /><small>Assigned by your administrator.</small></label>
+                {orderedFields(["photograph"])}
+              </div>
+            </section>
+            {directFields.some(field => professionalIds.includes(field.id)) && <section className="application-form-section">
+              <h3>Professional details</h3>
+              <div className="form-grid">{orderedFields(professionalIds)}</div>
+            </section>}
+            {directFields.some(field => interestIds.includes(field.id)) && <section className="application-form-section">
+              <h3>Contributions &amp; interests</h3>
+              <div className="form-grid">{orderedFields(interestIds)}</div>
+            </section>}
+            {directFields.some(field => !["photograph", ...professionalIds, ...interestIds].includes(field.id)) && <section className="application-form-section">
+              <h3>Additional professional details</h3>
+              <div className="form-grid">{directFields.filter(field => !["photograph", ...professionalIds, ...interestIds].includes(field.id)).map(renderField)}</div>
+            </section>}
+          </div> : <div className="form-grid">{directFields.map(renderField)}</div>}
           {optionalGroups.map((group) => {
             const fields = activeFields.filter(
               (f) => group.ids.includes(f.id) && !isRequired(f),
@@ -689,21 +736,37 @@ export function ApplicationDraft({
               </details>
             ) : null;
           })}
-        </fieldset>
+        </fieldset>}
         {draft.step === 4 && (
           <section>
             <h3>Review your details</h3>
-            <dl>
+            <dl className="application-review-list">
               {status?.policy.fields
-                .filter(
-                  (f) => applicable(f, draft.category) && draft.details[f.id],
-                )
-                .map((f) => (
-                  <div key={f.id}>
-                    <dt>{f.label}</dt>
-                    <dd>{verificationAnswer(f, draft.details[f.id])}</dd>
-                  </div>
-                ))}
+                .filter(f => !/^(proposer|seconder)/.test(f.id) && !["correspondenceAddress", "deliveryPreference"].includes(f.id) && memberApplicationFieldStep(f) !== 4 && applicable(f, draft.category) && (draft.details[f.id] || isRequired(f)))
+                .map(f => {
+                  const label = f.id === "officeAddress" ? "Correspondence address" : f.id === "residenceAddress" ? "Permanent address" : f.label;
+                  const editing = reviewEditing === f.id;
+                  return <div key={f.id} className="application-review-row">
+                    <dt>{label}</dt>
+                    <dd>
+                      <div className="application-review-value">
+                        <span>{draft.details[f.id] ? verificationAnswer(f, draft.details[f.id]) : "Not provided"}</span>
+                        <button className="text-button" type="button" aria-label={`${editing ? "Close editor for" : "Edit"} ${label}`} aria-expanded={editing} aria-controls={`review-edit-${f.id}`} disabled={!ready || busy || conflict} onClick={async () => {
+                          if (!(await save())) return;
+                          if (!editing && f.id === "residenceAddress") setSameAddress(false);
+                          setReviewEditing(editing ? null : f.id);
+                          if (!editing) requestAnimationFrame(() => document.getElementById(`review-edit-${f.id}`)?.querySelector<HTMLElement>("input,select,textarea,summary,button")?.focus());
+                        }}>{editing ? "Close" : "Edit"}</button>
+                      </div>
+                      {editing && <fieldset id={`review-edit-${f.id}`} className="application-review-editor" disabled={!ready || busy || conflict}>
+                        {renderField(f)}
+                        <button className="button secondary" type="button" onClick={async () => {
+                          if (await save()) setReviewEditing(null);
+                        }}>Save changes</button>
+                      </fieldset>}
+                    </dd>
+                  </div>;
+                })}
             </dl>
             <h3>Before submission</h3>
             {missing.length ? (
@@ -731,7 +794,7 @@ export function ApplicationDraft({
                                   : "residenceAddress")),
                         );
                         if (field && (await save())) {
-                          edit({ ...current.current, step: field.step });
+                          edit({ ...current.current, step: memberApplicationFieldStep(field) });
                           await save();
                           requestAnimationFrame(() =>
                             (() => {
@@ -754,6 +817,10 @@ export function ApplicationDraft({
             ) : (
               <p>Required details are complete.</p>
             )}
+            <fieldset className="application-final-declaration" disabled={!ready || busy || conflict}>
+              <legend className="sr-only">Declaration and signature</legend>
+              <div className="form-grid">{directFields.map(renderField)}</div>
+            </fieldset>
             <button
               type="button"
               className="button"
@@ -795,14 +862,14 @@ export function ApplicationDraft({
           </section>
         )}
         <div className="form-actions">
-          {draft.step > 0 && (
+          {memberApplicationStep(draft.step) > 0 && (
             <button
               className="button secondary"
               type="button"
               disabled={!ready || busy}
               onClick={async () => {
                 if (await save()) {
-                  edit({ ...current.current, step: current.current.step - 1 });
+                  edit({ ...current.current, step: adjacentApplicationStep(current.current.step, -1) });
                   await save();
                 }
               }}
@@ -823,7 +890,7 @@ export function ApplicationDraft({
               disabled={!ready || busy || conflict}
               onClick={async () => {
                 if (await save()) {
-                  edit({ ...current.current, step: current.current.step + 1 });
+                  edit({ ...current.current, step: adjacentApplicationStep(current.current.step, 1) });
                   await save();
                 }
               }}
@@ -853,7 +920,7 @@ export function ApplicationDraft({
                       (f) => f.id === fieldId,
                     );
                     if (!field) return;
-                    current.current = { ...current.current, step: field.step };
+                    current.current = { ...current.current, step: memberApplicationFieldStep(field) };
                     setDraft(current.current);
                     requestAnimationFrame(() => {
                       const input = document.getElementById(
@@ -884,13 +951,13 @@ export function ApplicationDraft({
         </button>
       )}
       <Link
-        href="/member"
+        href="/member/events"
         onClick={async (e) => {
           e.preventDefault();
-          if (await save()) router.push("/member");
+          if (await save()) router.push("/member/events");
         }}
       >
-        Return to dashboard
+        Return to events
       </Link>
     </div>
   );

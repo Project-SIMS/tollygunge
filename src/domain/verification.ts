@@ -26,9 +26,25 @@ export const verificationSteps = [
   "Membership & professional details",
   "Personal details",
   "Contact & preferences",
-  "Evidence & referrals",
+  "Evidence",
   "Review & declaration",
 ];
+// Keep legacy policy/draft step IDs compatible while presenting three member steps.
+// Old contact links open personal details; old evidence links open membership details.
+export const memberApplicationSteps = [
+  { step: 0, label: "Membership & professional details" },
+  { step: 1, label: "Personal details, contact & preferences" },
+  { step: 4, label: "Review & declaration" },
+];
+export function memberApplicationStep(step: number) { return step === 2 ? 1 : step === 3 ? 0 : step; }
+export function memberApplicationFieldStep(field: Pick<VerificationField, "id" | "step">) {
+  return ["contributions", "contributionsOther", "interests", "interestsOther"].includes(field.id)
+    ? 0 : memberApplicationStep(field.step);
+}
+export function adjacentApplicationStep(step: number, direction: -1 | 1) {
+  const index = memberApplicationSteps.findIndex(item => item.step === memberApplicationStep(step));
+  return memberApplicationSteps[Math.max(0, Math.min(memberApplicationSteps.length - 1, index + direction))].step;
+}
 const field = (
   id: string,
   label: string,
@@ -42,7 +58,7 @@ const field = (
   step,
   required,
   type,
-  visible: true,
+  visible: !/^(proposer|seconder)/.test(id) && !["correspondenceAddress", "deliveryPreference"].includes(id),
   categories: ["Professional"],
   options,
   maxLength:
@@ -135,7 +151,7 @@ export const initialFields: VerificationField[] = [
     documentKind: "photograph",
   },
   {
-    ...field("certificate", "Professional certificate", 3, true, "document"),
+    ...field("certificate", "Professional certificate", 3, false, "document"),
     categories: ["Professional"],
     documentKind: "certificate",
   },
@@ -298,15 +314,16 @@ export function missingFields(
     .map((f) => f.label);
   if(category!=="Professional") missing.push("Professional category required");
   if (!emailVerified) missing.push("Verify your account email");
-  if (
+  const correspondenceEnabled = fields.some(field => field.id === "correspondenceAddress" && applicable(field, category));
+  if (correspondenceEnabled && (
     (answers.correspondenceAddress === "Office" &&
       !answers.officeAddress?.trim()) ||
     (answers.correspondenceAddress === "Residence" &&
       !answers.residenceAddress?.trim())
-  )
+  ))
     missing.push("Selected correspondence address");
   for (const key of addressKeys) {
-    if (answers[`${key}Structured`] && (answers.correspondenceAddress === (key === "officeAddress" ? "Office" : "Residence"))) {
+    if (correspondenceEnabled && answers[`${key}Structured`] && (answers.correspondenceAddress === (key === "officeAddress" ? "Office" : "Residence"))) {
       try { if (!addressComplete(parseAddress(answers[`${key}Structured`]))) missing.push("Complete selected correspondence address"); }
       catch { missing.push("Check selected correspondence address"); }
     }
@@ -317,9 +334,9 @@ export function missingFields(
 /** Completion of applicable required items; completion never grants approval. */
 export function verificationProgress(fields: VerificationField[], answers: Record<string, string>, category: string, emailVerified: boolean) {
   const missing = missingFields(fields, answers, category, emailVerified);
-  const tasks = fields.filter(f => applicable(f, category) && (f.required || (f.regulated && ["CA", "CS", "ICMAI", "Bar Council"].includes(answers.professionalBody)))).map(f => ({ id: f.id, label: f.label, step: f.step, complete: !missing.includes(f.label) }));
+  const tasks = fields.filter(f => applicable(f, category) && (f.required || (f.regulated && ["CA", "CS", "ICMAI", "Bar Council"].includes(answers.professionalBody)))).map(f => ({ id: f.id, label: f.label, step: memberApplicationFieldStep(f), complete: !missing.includes(f.label) }));
   if (category !== "Professional") tasks.push({ id: "category", label: "Professional category required", step: 0, complete: false });
-  if (["Office", "Residence"].includes(answers.correspondenceAddress)) tasks.push({ id: "selected-address", label: "Complete your selected correspondence address", step: 2, complete: !missing.some(label => ["Selected correspondence address", "Complete selected correspondence address", "Check selected correspondence address"].includes(label)) });
+  if (fields.some(field => field.id === "correspondenceAddress" && applicable(field, category)) && ["Office", "Residence"].includes(answers.correspondenceAddress)) tasks.push({ id: "selected-address", label: "Complete your selected correspondence address", step: 2, complete: !missing.some(label => ["Selected correspondence address", "Complete selected correspondence address", "Check selected correspondence address"].includes(label)) });
   tasks.push({ id: "email", label: "Verify your account email", step: -1, complete: emailVerified });
   const completed = tasks.filter(task => task.complete).length;
   const remaining = tasks.filter(task => !task.complete).map(({ id, label, step }) => ({ id, label, step, href: step < 0 ? "/member#verification-email-action" : `/member/application?step=${step}` }));

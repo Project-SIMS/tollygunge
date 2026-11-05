@@ -39,3 +39,13 @@ postal hierarchy. District spellings below match the postal reference exactly.
 
 No address lines, identity details, membership status, account verification or
 payment records are changed by these city-reference additions.
+
+## PIN-specific Burla mapping reviewed 2026-11-04
+
+The Sambalpur district postal directory lists Burla/Medical College Burla
+(768017), Engineering College Burla (768018), Jyotivihar Burla (768019), and
+Jagruti Vihar Burla (768020):
+https://sambalpur.odisha.gov.in/en/directory/std-and-pin-codes .
+The reviewed runtime mapping in `src/domain/postal-cities.ts` applies only to
+these PINs with the matching Odisha/Sambalpur hierarchy. It does not assign
+Burla to every PIN in Sambalpur district or rename postal localities.

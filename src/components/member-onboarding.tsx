@@ -97,7 +97,7 @@ export function MemberOnboarding({
               </Link>
               </div>
             </div>
-            <VerifyEmail email={s.email} verified={s.emailVerified} />
+            {!s.emailVerified && <VerifyEmail email={s.email} verified={false} />}
           </div>
           {review?.reason && (
             <div className="member-review-feedback">

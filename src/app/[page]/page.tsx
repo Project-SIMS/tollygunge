@@ -1,3 +1,4 @@
+import { selectPublicEvents } from "@/domain/public-event-selection";
 import { publicHistoricalEvents } from "@/lib/public-historical-events";
 import { peopleFallback } from "@/domain/people-placement";
 import { publishedPeople } from "@/lib/public-people";
@@ -25,11 +26,14 @@ export async function generateMetadata({
   return publicMetadata(`/${page}`, content?.title ?? pages[page].title, content?.intro || pages[page].intro);
 }
 export default async function ContentPage({
-  params,
+  params, searchParams,
 }: {
   params: Promise<{ page: string }>;
+  searchParams: Promise<{ month?: string }>;
 }) {
   const { page } = await params;
+  const requestedMonth = (await searchParams).month;
+  const month = typeof requestedMonth === "string" && /^\d{4}-(0[1-9]|1[0-2])$/.test(requestedMonth) ? requestedMonth : "";
   const fallback = pages[page];
   if (!fallback) notFound();
   const live = await publishedPage(page);
@@ -55,15 +59,16 @@ export default async function ContentPage({
           )
         ).rows
       : [];
-  const events =
+  const allEvents =
     page === "events" && process.env.DATABASE_URL
       ? (
           await getDatabase().query(
-            "SELECT id,title,location,starts_at,ends_at FROM tpa.events WHERE status='published' AND visibility='public' ORDER BY starts_at DESC LIMIT 100",
+            "SELECT id,title,location,starts_at,ends_at FROM tpa.events WHERE status='published' AND visibility='public' AND ($1::text='' OR to_char(starts_at AT TIME ZONE 'Asia/Kolkata','YYYY-MM')=$1) ORDER BY starts_at DESC", [month],
           )
         ).rows
       : [];
-  const pastEvents = page === "events" ? await publicHistoricalEvents() : [];
+  const selection = selectPublicEvents(allEvents, page === "events" ? await publicHistoricalEvents(month) : [], month);
+  const events = selection.events, pastEvents = selection.historical;
   if (!live && page === "events") {
     data.sections[0].text = events.some(
       (event) => new Date(event.ends_at) > new Date(),
@@ -85,7 +90,7 @@ export default async function ContentPage({
       <PublicContentView
         page={page}
         data={data}
-        context={{ people, media, events, pastEvents, articles,biographyTemplate:(await publishedSettings('shared')).biographyHeading,importantLinks:page==='resources'?await publishedResources('link'):[],downloads:page==='resources'?await publishedResources('document'):[] }}
+        context={{ eventMonth: month, people, media, events, pastEvents, articles,biographyTemplate:(await publishedSettings('shared')).biographyHeading,importantLinks:page==='resources'?await publishedResources('link'):[],downloads:page==='resources'?await publishedResources('document'):[] }}
       />
     </SiteShell>
   );

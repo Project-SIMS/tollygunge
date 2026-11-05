@@ -1,3 +1,4 @@
+import { EventMonthInput } from "./event-month-input";
 import type { PublicHistoricalEvent } from "@/lib/public-historical-events";
 import { HistoricalEventCard } from "./historical-event-card";
 import Link from "next/link";
@@ -11,6 +12,7 @@ import {
 import { RichContent } from "./rich-content";
 import type { ContentBody } from "@/domain/operations";
 export type PublicContentContext = {
+  eventMonth?: string;
   pastEvents?: PublicHistoricalEvent[];
   defaultPage?: ContentBody;
   biographyTemplate?: string;
@@ -103,6 +105,16 @@ export function PublicContentView({
           />
         )}
       </div>
+      {page === "events" && <section className="event-archive-filter" aria-label="Browse events by month">
+        <form action="/events" method="get">
+          <label htmlFor="event-archive-month">Browse past events
+            <EventMonthInput id="event-archive-month" name="month" defaultValue={context.eventMonth ?? ""} required />
+          </label>
+          <button className="button" type="submit">Show month</button>
+          {context.eventMonth && <Link className="text-link" href="/events">Back to latest events</Link>}
+        </form>
+        <p role="status">{context.eventMonth ? `Events for ${new Intl.DateTimeFormat("en-IN", { month: "long", year: "numeric", timeZone: "Asia/Kolkata" }).format(new Date(context.eventMonth + "-01T12:00:00+05:30"))}${!events.length && !context.pastEvents?.length ? " — no events found." : "."}` : "Showing the latest three events. Choose a month to browse earlier events."}</p>
+      </section>}
       <div className="public-content-layout">
         <aside className="public-page-index">
           <nav aria-label="On this page">
